@@ -5,13 +5,15 @@ class Animation {
 public:
     Animation(float initialValue, float endValue, float duration, bool easing = false)
     : clock(0.0f),
+      duration(duration),
       easing(easing) {}
     
     //virtual void update(float dt) {}
     
 private:
-    bool easing;
     float clock;
+    float duration;
+    bool easing;
 };
 
 #endif

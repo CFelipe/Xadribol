@@ -43,6 +43,8 @@ void Game::gameLoop() {
     }
 }
 
+// ------------------------------------------
+
 Game::Game() {
     this->window.create(sf::VideoMode(800, 600), "Xadribol", sf::Style::Close);
     
@@ -55,7 +57,7 @@ Game::Game() {
     texmgr.loadTexture("card_steal_r", "card_passar_r.png");
     texmgr.loadTexture("card_pass_b", "card_tocar_b.png");
     
-    texmgr.loadTexture("fieldcard_blank", "fieldcard_blank.png");
+    texmgr.loadTexture("fieldcard_bl", "fieldcard_blank.png"); // bl for blank
     texmgr.loadTexture("fieldcard_cc", "fieldcard_cc.png");
     texmgr.loadTexture("fieldcard_cd", "fieldcard_cd.png");
     texmgr.loadTexture("fieldcard_cu", "fieldcard_cu.png");
@@ -74,9 +76,34 @@ Game::Game() {
     texmgr.loadTexture("playerhalo_r", "playerhalo_r.png");
     
     texmgr.loadTexture("cursorhelper_invalid", "cursorhelper_invalid.png");
+    
+    fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_lu"),   sf::Vector2i(0, 0)));
+    fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_u"),    sf::Vector2i(1, 0)));
+    fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_cu"),   sf::Vector2i(2, 0)));
+    fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_u"),    sf::Vector2i(3, 0)));
+    fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_ru"),   sf::Vector2i(4, 0)));
+    fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_lc"),   sf::Vector2i(0, 1)));
+    fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_bl"),   sf::Vector2i(1, 1)));
+    fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_cc"),   sf::Vector2i(2, 1)));
+    fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_bl"),   sf::Vector2i(3, 1)));
+    fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_rc"),   sf::Vector2i(4, 1)));
+    fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_ld"),   sf::Vector2i(0, 2)));
+    fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_d"),    sf::Vector2i(1, 2)));
+    fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_cd"),   sf::Vector2i(2, 2)));
+    fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_d"),    sf::Vector2i(3, 2)));
+    fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_rd"),   sf::Vector2i(4, 2)));
+    
+    for(FieldCard* card : fieldCards) {
+        card->sprite.setPosition(getCardPosition(card->gameCoords));
+    }
 }
 
 Game::~Game()
 {
     while(!this->states.empty()) popState();
+}
+
+sf::Vector2f Game::getCardPosition(sf::Vector2i gameCoords) {
+    return sf::Vector2f(CARDS_ORIGIN_X + (CARD_W + 4) * gameCoords.x,
+                        CARDS_ORIGIN_Y + (CARD_H + 3) * gameCoords.y);
 }
