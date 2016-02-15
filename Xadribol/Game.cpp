@@ -93,10 +93,12 @@ Game::Game() {
     fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_d"),    sf::Vector2i(3, 2)));
     fieldCards.push_back(new FieldCard(texmgr.getRef("fieldcard_rd"),   sf::Vector2i(4, 2)));
     
+    sf::Vector2f pos1 = getCardPosition(sf::Vector2i(0, 0));
     for(FieldCard* card : fieldCards) {
-        card->sprite.setPosition(getCardPosition(card->gameCoords));
-        //card->sprite.setColor(sf::Color::Transparent);
-        animationList.push_back(new Animation(card->sprite, AnimationDest::OPACITY, 0.0f, 255.0f, 2.0f));
+        sf::Vector2f pos = getCardPosition(card->gameCoords);
+        animationList.push_back(new Animation(card->sprite, AnimationDest::OPACITY, 0, 255, 3.0f));
+        animationList.push_back(new Animation(card->sprite, AnimationDest::POS_X, pos1.x, pos.x, 3.0f));
+        animationList.push_back(new Animation(card->sprite, AnimationDest::POS_Y, pos1.y, pos.y, 3.0f));
     }
 }
 
