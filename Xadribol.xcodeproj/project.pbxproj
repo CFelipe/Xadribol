@@ -36,6 +36,9 @@
 		55CA3ACE1C71196900A494F1 /* playerhalo_b.png in Resources */ = {isa = PBXBuildFile; fileRef = 55CA3AB41C71196900A494F1 /* playerhalo_b.png */; };
 		55CA3ACF1C71196900A494F1 /* playerhalo_r.png in Resources */ = {isa = PBXBuildFile; fileRef = 55CA3AB51C71196900A494F1 /* playerhalo_r.png */; };
 		55CA3AD21C711D6300A494F1 /* Game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55CA3AD01C711D6300A494F1 /* Game.cpp */; };
+		55CA3AD61C71205C00A494F1 /* TextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55CA3AD41C71205C00A494F1 /* TextureManager.cpp */; };
+		55CA3AD91C712C9600A494F1 /* PlayingState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55CA3AD71C712C9600A494F1 /* PlayingState.cpp */; };
+		55CA3ADC1C714B1500A494F1 /* inconsolata.otf in Resources */ = {isa = PBXBuildFile; fileRef = 55CA3ADB1C714B1500A494F1 /* inconsolata.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +75,16 @@
 		55CA3AB51C71196900A494F1 /* playerhalo_r.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = playerhalo_r.png; path = resources/playerhalo_r.png; sourceTree = "<group>"; };
 		55CA3AD01C711D6300A494F1 /* Game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Game.cpp; sourceTree = "<group>"; };
 		55CA3AD11C711D6300A494F1 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
+		55CA3AD31C71200900A494F1 /* GameState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameState.h; sourceTree = "<group>"; };
+		55CA3AD41C71205C00A494F1 /* TextureManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureManager.cpp; sourceTree = "<group>"; };
+		55CA3AD51C71205C00A494F1 /* TextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureManager.h; sourceTree = "<group>"; };
+		55CA3AD71C712C9600A494F1 /* PlayingState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayingState.cpp; sourceTree = "<group>"; };
+		55CA3AD81C712C9600A494F1 /* PlayingState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingState.h; sourceTree = "<group>"; };
+		55CA3ADA1C71431F00A494F1 /* Animation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Animation.h; sourceTree = "<group>"; };
+		55CA3ADB1C714B1500A494F1 /* inconsolata.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = inconsolata.otf; path = resources/inconsolata.otf; sourceTree = "<group>"; };
+		55CA3ADD1C714D8200A494F1 /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
+		55CA3ADE1C714D9300A494F1 /* FieldCard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FieldCard.h; sourceTree = "<group>"; };
+		55CA3ADF1C714DA600A494F1 /* ActionCard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionCard.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,13 +117,22 @@
 		55CA3A861C70E36E00A494F1 /* Xadribol */ = {
 			isa = PBXGroup;
 			children = (
+				55CA3ADA1C71431F00A494F1 /* Animation.h */,
 				55CA3A891C70E36E00A494F1 /* ResourcePath.mm */,
 				55CA3A8B1C70E36E00A494F1 /* ResourcePath.hpp */,
 				55CA3A8C1C70E36E00A494F1 /* main.cpp */,
 				55CA3AD01C711D6300A494F1 /* Game.cpp */,
 				55CA3AD11C711D6300A494F1 /* Game.h */,
+				55CA3AD31C71200900A494F1 /* GameState.h */,
+				55CA3AD41C71205C00A494F1 /* TextureManager.cpp */,
+				55CA3AD51C71205C00A494F1 /* TextureManager.h */,
+				55CA3AD71C712C9600A494F1 /* PlayingState.cpp */,
+				55CA3AD81C712C9600A494F1 /* PlayingState.h */,
+				55CA3ADD1C714D8200A494F1 /* Player.h */,
+				55CA3ADE1C714D9300A494F1 /* FieldCard.h */,
 				55CA3A8E1C70E36E00A494F1 /* Resources */,
 				55CA3A871C70E36E00A494F1 /* Supporting Files */,
+				55CA3ADF1C714DA600A494F1 /* ActionCard.h */,
 			);
 			path = Xadribol;
 			sourceTree = "<group>";
@@ -126,6 +148,7 @@
 		55CA3A8E1C70E36E00A494F1 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				55CA3ADB1C714B1500A494F1 /* inconsolata.otf */,
 				55CA3A9C1C71196900A494F1 /* ball.png */,
 				55CA3A9D1C71196900A494F1 /* card_chutar_b.png */,
 				55CA3A9E1C71196900A494F1 /* card_defender_r.png */,
@@ -225,6 +248,7 @@
 				55CA3ACE1C71196900A494F1 /* playerhalo_b.png in Resources */,
 				55CA3AB61C71196900A494F1 /* ball.png in Resources */,
 				55CA3AC61C71196900A494F1 /* fieldcard_ld.png in Resources */,
+				55CA3ADC1C714B1500A494F1 /* inconsolata.otf in Resources */,
 				55CA3AC01C71196900A494F1 /* fieldcard_blank.png in Resources */,
 				55CA3ABF1C71196900A494F1 /* cursorhelper_invalid.png in Resources */,
 				55CA3ABB1C71196900A494F1 /* card_mover_r.png in Resources */,
@@ -266,8 +290,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				55CA3AD21C711D6300A494F1 /* Game.cpp in Sources */,
+				55CA3AD91C712C9600A494F1 /* PlayingState.cpp in Sources */,
 				55CA3A8D1C70E36E00A494F1 /* main.cpp in Sources */,
 				55CA3A8A1C70E36E00A494F1 /* ResourcePath.mm in Sources */,
+				55CA3AD61C71205C00A494F1 /* TextureManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
