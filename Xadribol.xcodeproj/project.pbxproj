@@ -130,9 +130,9 @@
 				55CA3AD81C712C9600A494F1 /* PlayingState.h */,
 				55CA3ADD1C714D8200A494F1 /* Player.h */,
 				55CA3ADE1C714D9300A494F1 /* FieldCard.h */,
+				55CA3ADF1C714DA600A494F1 /* ActionCard.h */,
 				55CA3A8E1C70E36E00A494F1 /* Resources */,
 				55CA3A871C70E36E00A494F1 /* Supporting Files */,
-				55CA3ADF1C714DA600A494F1 /* ActionCard.h */,
 			);
 			path = Xadribol;
 			sourceTree = "<group>";
@@ -431,6 +431,7 @@
 				55CA3A9B1C70E36E00A494F1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

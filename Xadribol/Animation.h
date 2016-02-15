@@ -14,19 +14,42 @@ public:
       endValue(endValue),
       clockval(0.0f),
       duration(duration),
-      easing(easing) {
-          switch(dest) {
-              case AnimationDest::POS_X:
-                  sprite.setPosition(sf::Vector2f(initialValue, sprite.getPosition().y));
-                  break;
-              case AnimationDest::POS_Y:
-                  sprite.setPosition(sf::Vector2f(sprite.getPosition().x, initialValue));
-                  break;
-              case AnimationDest::OPACITY:
-                  sprite.setColor(sf::Color(255, 255, 255, (int) ((clockval / duration) * endValue)));
-                  break;
-          }
-      }
+      easing(easing)
+    {
+        switch(dest) {
+            case AnimationDest::POS_X:
+                sprite.setPosition(sf::Vector2f(initialValue, sprite.getPosition().y));
+                break;
+            case AnimationDest::POS_Y:
+                sprite.setPosition(sf::Vector2f(sprite.getPosition().x, initialValue));
+                break;
+            case AnimationDest::OPACITY:
+                sprite.setColor(sf::Color(255, 255, 255, (int) ((clockval / duration) * endValue)));
+                break;
+        }
+    }
+    
+    Animation(sf::Sprite& sprite, AnimationDest dest, float endValue, float duration, bool easing = false)
+    : sprite(sprite),
+      dest(dest),
+      endValue(endValue),
+      clockval(0.0f),
+      duration(duration),
+      easing(easing)
+    {
+        switch(dest) {
+            case AnimationDest::POS_X:
+                initialValue = sprite.getPosition().x;
+                break;
+            case AnimationDest::POS_Y:
+                initialValue = sprite.getPosition().y;
+                break;
+            case AnimationDest::OPACITY:
+                std::cout << (int) sprite.getColor().a << std::endl;
+                initialValue = sprite.getColor().a;
+                break;
+        }
+    }
     
     bool update(const float dt) {
         clockval += dt;
@@ -35,12 +58,12 @@ public:
         switch(dest) {
             case AnimationDest::POS_X:
                 sprite.setPosition(sf::Vector2f(//initialValue + (clockval / duration) * (endValue - initialValue),
-                                                easeInOut(clockval, initialValue, endValue - initialValue, duration),
+                                                easeOut(clockval, initialValue, endValue - initialValue, duration),
                                                 sprite.getPosition().y));
                 break;
             case AnimationDest::POS_Y:
                 sprite.setPosition(sf::Vector2f(sprite.getPosition().x,
-                                                easeInOut(clockval, initialValue, endValue - initialValue, duration)));
+                                                easeOut(clockval, initialValue, endValue - initialValue, duration)));
                                                 //initialValue + (clockval / duration) * (endValue - initialValue)));
                 break;
             case AnimationDest::OPACITY:
