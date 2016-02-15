@@ -75,10 +75,10 @@ public:
     
     void selectPlayer(Player* player);
     sf::Vector2f getCardPosition(sf::Vector2i gameCoords);
-    void updatePlayerPositions(bool animate = false);
+    void updatePlayerPositions(bool animate = true);
     void updateCursorHelper(bool show, sf::Vector2i mousePos = sf::Vector2i(25, 25));
     void moveSelectedPlayer(sf::Vector2i gameCoords);
-    
+    void makeFieldCardsAvailable();
 };
 
 #endif /* defined(__Xadribol__Game__) */

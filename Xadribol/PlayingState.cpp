@@ -19,6 +19,16 @@ void PlayingState::handleInput() {
                     if(player->contains(mousePos)) {
                         if(player->selectable) {
                             game->selectPlayer(player);
+                            return;
+                        }
+                    }
+                }
+                
+                for(FieldCard* card : game->fieldCards) {
+                    if(card->contains(mousePos)) {
+                        if(card->available) {
+                            game->moveSelectedPlayer(card->gameCoords);
+                            return;
                         }
                     }
                 }

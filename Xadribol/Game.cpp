@@ -126,7 +126,7 @@ Game::Game()
     playerHalo.setTextureRect(sf::IntRect(0, 0, 40, 40));
     playerHalo.setColor(sf::Color::Transparent);
     
-    updatePlayerPositions();
+    updatePlayerPositions(false);
 }
 
 Game::~Game()
@@ -134,9 +134,10 @@ Game::~Game()
     while(!this->states.empty()) popState();
 }
 
-void Game::selectPlayer(Player *player) {
+void Game::selectPlayer(Player* player) {
+    selectedPlayer = player;
+    
     if(player != nullptr) {
-        selectedPlayer = player;
         playerHalo.setTexture(player->team == Team::BLUE ? texmgr.getRef("playerhalo_b") :
                                                            texmgr.getRef("playerhalo_r"));
         playerHalo.setColor(sf::Color(255, 255, 255, 255));
@@ -149,7 +150,8 @@ void Game::selectPlayer(Player *player) {
                 card->available = dim;
             }
         }
-    
+    } else {
+        playerHalo.setColor(sf::Color::Transparent);
     }
 }
 
@@ -177,8 +179,8 @@ void Game::updatePlayerPositions(bool animate) {
                          offsetY + CARDS_ORIGIN_Y + (CARD_H + 3) * player->gameCoords.y);
         
         if(animate) {
-            animations.push_back(new Animation(player->sprite, AnimationDest::POS_X, pos.x, 1.0f));
-            animations.push_back(new Animation(player->sprite, AnimationDest::POS_Y, pos.y, 1.0f));
+            animations.push_back(new Animation(player->sprite, AnimationDest::POS_X, pos.x, 0.5f));
+            animations.push_back(new Animation(player->sprite, AnimationDest::POS_Y, pos.y, 0.5f));
         } else {
             player->sprite.setPosition(pos);
         }
@@ -201,6 +203,19 @@ void Game::updateCursorHelper(bool show, sf::Vector2i mousePos) {
     }
 }
 
-void moveSelectedPlayer(sf::Vector2i gameCoords) {
-    
+void Game::moveSelectedPlayer(sf::Vector2i gameCoords) {
+    if(selectedPlayer != nullptr) {
+        players.remove(selectedPlayer);
+        players.push_back(selectedPlayer);
+        selectedPlayer->gameCoords = gameCoords;
+        updatePlayerPositions();
+        selectPlayer(nullptr);
+        makeFieldCardsAvailable();
+    }
+}
+
+void Game::makeFieldCardsAvailable() {
+    for(FieldCard* card : fieldCards) {
+        card->available = true;
+    }
 }
