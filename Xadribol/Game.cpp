@@ -95,6 +95,8 @@ Game::Game() {
     
     for(FieldCard* card : fieldCards) {
         card->sprite.setPosition(getCardPosition(card->gameCoords));
+        //card->sprite.setColor(sf::Color::Transparent);
+        animationList.push_back(new Animation(card->sprite, AnimationDest::OPACITY, 0.0f, 255.0f, 2.0f));
     }
 }
 

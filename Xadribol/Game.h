@@ -9,6 +9,7 @@
 #include "TextureManager.h"
 #include "Player.h"
 #include "FieldCard.h"
+#include "Animation.h"
 
 const int PLAYER_W = 26;
 const int PLAYER_H = 26;
@@ -17,9 +18,7 @@ const int CARD_H = 108;
 const int CARDS_ORIGIN_X = 23;
 const int CARDS_ORIGIN_Y = 254;
 
-enum class Team {
-    BLUE, RED
-};
+enum class Team { BLUE, RED };
 
 class GameState;
 
@@ -50,7 +49,7 @@ public:
     sf::Font gameFont;
     
     // Game logic related --------------------------------
-    //std::list<Animation*> animationList;
+    std::list<Animation*> animationList;
     std::list<Player*> playerList;
     std::list<FieldCard*> fieldCards;
     //std::list<ActionCard*> actionCards;

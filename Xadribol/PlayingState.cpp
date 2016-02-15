@@ -16,6 +16,14 @@ void PlayingState::handleInput() {
 }
 
 void PlayingState::update(const float dt) {
+    std::list<Animation*>::iterator i = game->animationList.begin();
+    while(i != game->animationList.end()) {
+        if((*i)->update(dt) == false) {
+            i = game->animationList.erase(i);
+        } else {
+            ++i;
+        }
+    }
 }
 
 void PlayingState::draw(const float dt) {
