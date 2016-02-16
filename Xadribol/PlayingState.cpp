@@ -7,7 +7,7 @@ PlayingState::PlayingState(Game* game) {
 
 void PlayingState::handleInput() {
     sf::Event event;
-    
+        
     while(game->window.pollEvent(event)) {
         if(event.type == sf::Event::Closed) {
             game->window.close();
@@ -61,6 +61,8 @@ void PlayingState::update(const float dt) {
     for(FieldCard* card : game->fieldCards) {
         card->contains(sf::Mouse::getPosition(game->window));
     }
+    
+    game->updatePlayerHalo();
 }
 
 void PlayingState::draw(const float dt) {

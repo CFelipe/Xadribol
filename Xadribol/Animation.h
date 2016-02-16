@@ -84,6 +84,7 @@ private:
     bool easing;
     
     // from https://github.com/jesusgollonet/ofpennereasing/blob/master/PennerEasing/Expo.cpp
+    // http://easings.net/ has nice visualisations in case you want to change the equations
     
     float easeIn(float t, float b, float c, float d) {
         return (t==0) ? b : c * pow(2, 10 * (t/d - 1)) + b;

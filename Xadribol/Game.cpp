@@ -126,6 +126,7 @@ Game::Game()
     playerHalo.setTextureRect(sf::IntRect(0, 0, 40, 40));
     playerHalo.setColor(sf::Color::Transparent);
     
+    
     updatePlayerPositions(false);
 }
 
@@ -141,7 +142,6 @@ void Game::selectPlayer(Player* player) {
         playerHalo.setTexture(player->team == Team::BLUE ? texmgr.getRef("playerhalo_b") :
                                                            texmgr.getRef("playerhalo_r"));
         playerHalo.setColor(sf::Color(255, 255, 255, 255));
-        playerHalo.setPosition(player->sprite.getPosition() + sf::Vector2f(-7, -7));
     
         if(task == Task::Placement) {
             for(FieldCard* card : fieldCards) {
@@ -185,6 +185,12 @@ void Game::updatePlayerPositions(bool animate) {
             player->sprite.setPosition(pos);
         }
         
+    }
+}
+
+void Game::updatePlayerHalo() {
+    if(selectedPlayer != nullptr) {
+        playerHalo.setPosition(selectedPlayer->sprite.getPosition() + sf::Vector2f(-7, -7));
     }
 }
 
