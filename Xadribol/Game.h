@@ -42,44 +42,14 @@ public:
     
     TextureManager texmgr;
     
-    const sf::Color dark = sf::Color(35, 35, 35, 255);
-    const sf::Color light = sf::Color(242, 242, 242, 255);
-    const sf::Color blue = sf::Color(41, 137, 163, 255);
-    const sf::Color red = sf::Color(163, 41, 93, 255);
-    
-    sf::RectangleShape blueBar;
-    sf::RectangleShape redBar;
-    
-    sf::Sprite cursorHelper;
-    sf::Sprite playerHalo;
-    
     sf::RenderWindow window;
     sf::Font gameFont;
-    
-    // Game logic related --------------------------------
-    std::list<Animation*> animations;
-    std::list<Player*> players;
-    std::list<FieldCard*> fieldCards;
-    //std::list<ActionCard*> actionCards;
-    
-    unsigned short turn;
-    unsigned short scoreRed;
-    unsigned short scoreBlue;
-    
-    Task task;
-    
-    Player* selectedPlayer;
+    sf::Sprite cursorHelper;
     
     Game();
     ~Game();
     
-    void selectPlayer(Player* player);
-    sf::Vector2f getCardPosition(sf::Vector2i gameCoords);
-    void updatePlayerPositions(bool animate = true);
-    void updatePlayerHalo();
     void updateCursorHelper(bool show, sf::Vector2i mousePos = sf::Vector2i(25, 25));
-    void moveSelectedPlayer(sf::Vector2i gameCoords);
-    void makeFieldCardsAvailable();
 };
 
 #endif /* defined(__Xadribol__Game__) */
