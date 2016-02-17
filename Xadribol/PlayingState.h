@@ -2,6 +2,7 @@
 #define __Xadribol__PlayingState__
 
 #include "GameState.h"
+#include "TextButton.h"
 
 class PlayingState : public GameState {
 public:
@@ -11,10 +12,10 @@ public:
     virtual void update(const float dt);
     virtual void handleInput();
     
-    // Game logic related --------------------------------
     std::list<Animation*> animations;
     std::list<Player*> players;
     std::list<FieldCard*> fieldCards;
+    std::list<sf::Drawable*> drawableEntities; // maybe not the best idea but let's see
     //std::list<ActionCard*> actionCards;
     
     unsigned short turn;
@@ -32,8 +33,16 @@ public:
     
     sf::RectangleShape blueBar;
     sf::RectangleShape redBar;
-    
+    sf::RectangleShape actionBar;
+    TextButton* playButton;
+    sf::Sprite roulette;
+    sf::Sprite rouletteNeedle;
     sf::Sprite playerHalo;
+    sf::Sprite ball;
+    
+    // these are meant to be removed as soon as possible
+    float iads = 0;
+    float vel = 1500.0f;
     
     void selectPlayer(Player* player);
     sf::Vector2f getCardPosition(sf::Vector2i gameCoords);

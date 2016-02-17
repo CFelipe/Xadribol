@@ -10,6 +10,48 @@ PlayingState::PlayingState(Game* game)
 {
     this->game = game;
     
+    /*
+    Try to set up drawables here as they're drawn from top to bottom
+     
+    If they're drawn on top of each other (like players and cards) add what's behind
+        
+    So I recommend  Visible - Invisible (cursorHelper) / Top - Bottom / Back - Front
+        
+    When pushing to drawableEntities, mind the order as entities are drawn in the order they're added
+     
+    Don't forget to add drawables to drawableEntities when they're created, of course
+    */
+    
+    blueBar.setSize(sf::Vector2f(400, 4));
+    blueBar.setPosition(0, 50);
+    blueBar.setFillColor(blue);
+    redBar.setSize(sf::Vector2f(400, 4));
+    redBar.setPosition(400, 50);
+    redBar.setFillColor(red);
+    actionBar.setPosition(0, 54);
+    actionBar.setSize(sf::Vector2f(800, 180));
+    actionBar.setFillColor(dark);
+    
+    roulette.setTextureRect(sf::IntRect(0, 0, 68, 68));
+    roulette.setTexture(game->texmgr.getRef("roulette"));
+    roulette.setPosition(sf::Vector2f(400 - 68 / 2, 100));
+    
+    rouletteNeedle.setTextureRect(sf::IntRect(0, 0, 10, 30));
+    rouletteNeedle.setTexture(game->texmgr.getRef("roulette_needle"));
+    rouletteNeedle.setPosition(sf::Vector2f(400, 134));
+    rouletteNeedle.setOrigin(sf::Vector2f(5, 21));
+    rouletteNeedle.setRotation(0);
+    
+    playButton = new TextButton("Jogar", 32, game->gameFont, light);
+    playButton->setPosition(sf::Vector2f(400, 100));
+    
+    drawableEntities.push_back(&blueBar);
+    drawableEntities.push_back(&redBar);
+    drawableEntities.push_back(&actionBar);
+    drawableEntities.push_back(&roulette);
+    drawableEntities.push_back(&rouletteNeedle);
+    drawableEntities.push_back(playButton);
+    
     // Cards
     fieldCards.push_back(new FieldCard(game->texmgr.getRef("fieldcard_lu"),   sf::Vector2i(0, 0)));
     fieldCards.push_back(new FieldCard(game->texmgr.getRef("fieldcard_u"),    sf::Vector2i(1, 0)));
@@ -27,6 +69,10 @@ PlayingState::PlayingState(Game* game)
     fieldCards.push_back(new FieldCard(game->texmgr.getRef("fieldcard_d"),    sf::Vector2i(3, 2)));
     fieldCards.push_back(new FieldCard(game->texmgr.getRef("fieldcard_rd"),   sf::Vector2i(4, 2)));
     
+    for(FieldCard* card : fieldCards) {
+        drawableEntities.push_back(&card->sprite);
+    }
+    
     // Playas
     players.push_back(new Player(game->texmgr.getRef("player_b"),   sf::Vector2i(1, 0), Team::BLUE));
     players.push_back(new Player(game->texmgr.getRef("player_b"),   sf::Vector2i(2, 1), Team::BLUE, false));
@@ -34,6 +80,24 @@ PlayingState::PlayingState(Game* game)
     players.push_back(new Player(game->texmgr.getRef("player_r"),   sf::Vector2i(3, 0), Team::RED));
     players.push_back(new Player(game->texmgr.getRef("player_r"),   sf::Vector2i(2, 1), Team::RED, false));
     players.push_back(new Player(game->texmgr.getRef("player_r"),   sf::Vector2i(3, 2), Team::RED));
+    
+    playerHalo.setTextureRect(sf::IntRect(0, 0, 40, 40));
+    playerHalo.setColor(sf::Color::Transparent);
+    drawableEntities.push_back(&playerHalo);
+    
+    
+    for(Player* player : players) {
+        drawableEntities.push_back(&player->sprite);
+    }
+    
+    ball.setTextureRect(sf::IntRect(0, 0, 18, 18));
+    ball.setTexture(game->texmgr.getRef("ball"));
+    ball.setPosition(getCardPosition(sf::Vector2i(2, 1)) + sf::Vector2f(67, 45));
+    drawableEntities.push_back(&ball);
+    
+    drawableEntities.push_back(&game->cursorHelper);
+    
+    // ----------------------------------------------
     
     sf::Vector2f pos1 = getCardPosition(sf::Vector2i(0, 0));
     for(FieldCard* card : fieldCards) {
@@ -45,10 +109,7 @@ PlayingState::PlayingState(Game* game)
         //animationList.push_back(new Animation(card->sprite, AnimationDest::POS_X, pos1.x, pos.x, 1.0f));
         //animationList.push_back(new Animation(card->sprite, AnimationDest::POS_Y, pos1.y, pos.y, 1.0f));
     }
-    
-    playerHalo.setTextureRect(sf::IntRect(0, 0, 40, 40));
-    playerHalo.setColor(sf::Color::Transparent);
-    
+
     game->updateCursorHelper(false);
     updatePlayerPositions(false);
 }
@@ -63,6 +124,12 @@ void PlayingState::handleInput() {
             if(event.mouseButton.button == sf::Mouse::Left) {
                 sf::Vector2i mousePos = sf::Vector2i(event.mouseButton.x,
                                                      event.mouseButton.y);
+                
+                if(playButton->contains(mousePos)) {
+                    vel = 1500.0f;
+                    return;
+                }
+                
                 for(Player* player : players) {
                     if(player->contains(mousePos)) {
                         if(player->selectable) {
@@ -110,24 +177,25 @@ void PlayingState::update(const float dt) {
         card->contains(sf::Mouse::getPosition(game->window));
     }
     
+    iads += vel * dt;
+    rouletteNeedle.setRotation(iads);
+    
+    if(vel > 0) {
+        vel -= 500.0f * dt;
+    } else {
+        vel = 0;
+    }
+    
     updatePlayerHalo();
 }
 
 void PlayingState::draw(const float dt) {
     game->window.clear(light);
     
-    for(FieldCard* card : fieldCards) {
-        game->window.draw(card->sprite);
+    // We're only rendering sf::Drawables so we can do that:
+    for(sf::Drawable* entity : drawableEntities) {
+        game->window.draw(*entity);
     }
-    
-    game->window.draw(playerHalo);
-    
-    for(Player* player : players) {
-        game->window.draw(player->sprite);
-    }
-    
-    
-    game->window.draw(game->cursorHelper);
     
     game->window.display();
 }

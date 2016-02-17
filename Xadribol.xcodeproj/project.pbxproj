@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4AEB35711C73F172004F88E0 /* needle.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AEB356F1C73F172004F88E0 /* needle.png */; };
+		4AEB35721C73F172004F88E0 /* roulette.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AEB35701C73F172004F88E0 /* roulette.png */; };
 		55CA3A8A1C70E36E00A494F1 /* ResourcePath.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55CA3A891C70E36E00A494F1 /* ResourcePath.mm */; };
 		55CA3A8D1C70E36E00A494F1 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55CA3A8C1C70E36E00A494F1 /* main.cpp */; };
 		55CA3AB61C71196900A494F1 /* ball.png in Resources */ = {isa = PBXBuildFile; fileRef = 55CA3A9C1C71196900A494F1 /* ball.png */; };
@@ -42,6 +44,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4AEB356F1C73F172004F88E0 /* needle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = needle.png; path = resources/needle.png; sourceTree = "<group>"; };
+		4AEB35701C73F172004F88E0 /* roulette.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = roulette.png; path = resources/roulette.png; sourceTree = "<group>"; };
+		4AEB35731C73FC57004F88E0 /* TextButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextButton.h; sourceTree = "<group>"; };
 		55CA3A841C70E36E00A494F1 /* Xadribol.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xadribol.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55CA3A881C70E36E00A494F1 /* Xadribol-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Xadribol-Info.plist"; sourceTree = "<group>"; };
 		55CA3A891C70E36E00A494F1 /* ResourcePath.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
@@ -131,6 +136,7 @@
 				55CA3ADD1C714D8200A494F1 /* Player.h */,
 				55CA3ADE1C714D9300A494F1 /* FieldCard.h */,
 				55CA3ADF1C714DA600A494F1 /* ActionCard.h */,
+				4AEB35731C73FC57004F88E0 /* TextButton.h */,
 				55CA3A8E1C70E36E00A494F1 /* Resources */,
 				55CA3A871C70E36E00A494F1 /* Supporting Files */,
 			);
@@ -148,6 +154,8 @@
 		55CA3A8E1C70E36E00A494F1 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				4AEB356F1C73F172004F88E0 /* needle.png */,
+				4AEB35701C73F172004F88E0 /* roulette.png */,
 				55CA3ADB1C714B1500A494F1 /* inconsolata.otf */,
 				55CA3A9C1C71196900A494F1 /* ball.png */,
 				55CA3A9D1C71196900A494F1 /* card_chutar_b.png */,
@@ -247,6 +255,7 @@
 				55CA3ACC1C71196900A494F1 /* player_b.png in Resources */,
 				55CA3ACE1C71196900A494F1 /* playerhalo_b.png in Resources */,
 				55CA3AB61C71196900A494F1 /* ball.png in Resources */,
+				4AEB35721C73F172004F88E0 /* roulette.png in Resources */,
 				55CA3AC61C71196900A494F1 /* fieldcard_ld.png in Resources */,
 				55CA3ADC1C714B1500A494F1 /* inconsolata.otf in Resources */,
 				55CA3AC01C71196900A494F1 /* fieldcard_blank.png in Resources */,
@@ -258,6 +267,7 @@
 				55CA3AC21C71196900A494F1 /* fieldcard_cd.png in Resources */,
 				55CA3ACF1C71196900A494F1 /* playerhalo_r.png in Resources */,
 				55CA3ACB1C71196900A494F1 /* fieldcard_u.png in Resources */,
+				4AEB35711C73F172004F88E0 /* needle.png in Resources */,
 				55CA3AC11C71196900A494F1 /* fieldcard_cc.png in Resources */,
 				55CA3ABA1C71196900A494F1 /* card_mover_b.png in Resources */,
 				55CA3AC41C71196900A494F1 /* fieldcard_d.png in Resources */,

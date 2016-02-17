@@ -49,6 +49,7 @@ Game::Game() {
     this->window.create(sf::VideoMode(800, 600), "Xadribol", sf::Style::Close);
     
     gameFont.loadFromFile(resourcePath() + "inconsolata.otf");
+    
     texmgr.loadTexture("card_kick_b", "card_chutar_b.png");
     texmgr.loadTexture("card_defend_r", "card_defender_r.png");
     texmgr.loadTexture("card_dribble_b", "card_driblar_b.png");
@@ -74,6 +75,10 @@ Game::Game() {
     texmgr.loadTexture("player_r", "player_r.png");
     texmgr.loadTexture("playerhalo_b", "playerhalo_b.png");
     texmgr.loadTexture("playerhalo_r", "playerhalo_r.png");
+    
+    texmgr.loadTexture("ball", "ball.png");
+    texmgr.loadTexture("roulette", "roulette.png");
+    texmgr.loadTexture("roulette_needle", "needle.png");
     
     texmgr.loadTexture("cursorhelper_invalid", "cursorhelper_invalid.png");
     
