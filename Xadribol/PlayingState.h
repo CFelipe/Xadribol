@@ -4,6 +4,8 @@
 #include "GameState.h"
 #include "TextButton.h"
 
+enum class Task { Placement, PlacementTransition, Turn };
+
 class PlayingState : public GameState {
 public:
     PlayingState(Game* game);
@@ -50,7 +52,8 @@ public:
     void updatePlayerHalo();
     void moveSelectedPlayer(sf::Vector2i gameCoords);
     void makeFieldCardsAvailable();
-    
+    void moveBallToPlayer(Player* player);
+    void finishPlacement();
 };
 
 #endif /* defined(__Xadribol__PlayingState__) */

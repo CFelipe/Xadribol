@@ -23,8 +23,6 @@ const int PLAYER_VSPACE = 30;
 const int CURSORHELPER_OFFSET_X = 10;
 const int CURSORHELPER_OFFSET_Y = 10;
 
-enum class Task { Placement, Turn };
-
 class GameState;
 
 class Game {

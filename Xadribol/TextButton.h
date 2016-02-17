@@ -7,7 +7,8 @@ public:
                const sf::Color color, const sf::Color backgroundColor)
     : textSize(textSize),
       color(color),
-      backgroundColor(backgroundColor)
+      backgroundColor(backgroundColor),
+      enabled(true)
     {
         textShape = sf::Text(text, font, textSize);
         textShapeShadow = sf::Text(text, font, textSize);
@@ -30,6 +31,8 @@ public:
     }
     
     bool contains(sf::Vector2i point) {
+        if(!enabled) return false;
+        
         sf::FloatRect textRect = textShape.getLocalBounds();
         
         if(sf::IntRect(topStroke.getGlobalBounds().left  + getPosition().x,
@@ -52,6 +55,16 @@ public:
             return false;
         }
     }
+    
+    void disable() {
+        enabled = false;
+        color.a = 150;
+        backgroundColor.a = 150;
+        topStroke.setFillColor(color);
+        bottomStroke.setFillColor(color);
+        textShapeShadow.setColor(backgroundColor);
+        textShape.setColor(color);
+    }
 private:
     sf::Text textShape;
     sf::Text textShapeShadow;
@@ -60,6 +73,7 @@ private:
     unsigned int textSize;
     sf::Color color;
     sf::Color backgroundColor;
+    bool enabled;
     
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
         states.transform *= getTransform();

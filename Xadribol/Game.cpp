@@ -79,7 +79,6 @@ Game::Game() {
     texmgr.loadTexture("ball", "ball.png");
     texmgr.loadTexture("roulette", "roulette.png");
     texmgr.loadTexture("roulette_needle", "needle.png");
-    texmgr.loadTexture("roulette_needle_x4", "needle_x4.png");
     
     texmgr.loadTexture("cursorhelper_invalid", "cursorhelper_invalid.png");
     

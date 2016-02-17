@@ -10,7 +10,6 @@ public:
       team(team),
       selectable(selectable)
     {
-        if(!selectable) { sprite.setColor(sf::Color(255, 255, 255, 100)); }
         sprite.setTextureRect(sf::IntRect(0, 0, 26, 26));
         sprite.setTexture(texture);
     };
@@ -26,10 +25,20 @@ public:
     sf::Sprite sprite;
     sf::Vector2i gameCoords;
     Team team;
-    bool selectable;
+    
+    void setSelectable(bool selectable) {
+        this->selectable = selectable;
+        sprite.setColor((selectable ? sf::Color(255, 255, 255, 255) :
+                                      sf::Color(255, 255, 255, 100)));
+    }
+    
+    bool getSelectable() {
+        return selectable;
+    }
     
 private:
-    char opacity;
+    //char opacity;
+    bool selectable;
 };
 
 #endif

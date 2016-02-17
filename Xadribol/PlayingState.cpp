@@ -10,6 +10,8 @@ PlayingState::PlayingState(Game* game)
 {
     this->game = game;
     
+    std::srand(std::time(0));
+    
     /*
     Try to set up drawables here as they're drawn from top to bottom
      
@@ -128,13 +130,13 @@ void PlayingState::handleInput() {
                                                      event.mouseButton.y);
                 
                 if(playButton->contains(mousePos)) {
-                    needleVel = 1500.0f;
+                    finishPlacement();
                     return;
                 }
                 
                 for(Player* player : players) {
                     if(player->contains(mousePos)) {
-                        if(player->selectable) {
+                        if(player->getSelectable()) {
                             selectPlayer(player);
                             return;
                         }
@@ -158,6 +160,8 @@ void PlayingState::update(const float dt) {
     sf::Vector2i mousePos = sf::Mouse::getPosition(game->window);
     game->updateCursorHelper(false);
     
+    std::cout << animations.size() << std::endl;
+    
     std::list<Animation*>::iterator i = animations.begin();
     while(i != animations.end()) {
         if((*i)->update(dt) == false) {
@@ -169,7 +173,7 @@ void PlayingState::update(const float dt) {
     
     for(Player* player : players) {
         if(player->contains(mousePos)) {
-            if(!player->selectable) {
+            if(!player->getSelectable()) {
                 game->updateCursorHelper(true, mousePos);
             }
         }
@@ -179,13 +183,25 @@ void PlayingState::update(const float dt) {
         card->contains(sf::Mouse::getPosition(game->window));
     }
     
-    needleRotation += needleVel * dt;
-    rouletteNeedle.setRotation(needleRotation);
-    
-    if(needleVel > 0) {
-        needleVel -= 700.0f * dt;
-    } else {
-        needleVel = 0;
+    if(task == Task::PlacementTransition) {
+        needleRotation += needleVel * dt;
+        if(needleRotation > 360) needleRotation -= 360;
+        
+        rouletteNeedle.setRotation(needleRotation);
+        if(needleVel > 0) {
+            needleVel -= 1000.0f * dt;
+        } else {
+            needleVel = 0;
+            Team selectedTeam = (needleRotation >= 180.0f) ? Team::BLUE : Team::RED;
+            
+            for(Player* player : players) {
+                if(player->gameCoords == sf::Vector2i(2, 1) && selectedTeam == player->team) {
+                    moveBallToPlayer(player);
+                    task = Task::Turn;
+                    return;
+                }
+            }
+        }
     }
     
     updatePlayerHalo();
@@ -247,6 +263,7 @@ void PlayingState::updatePlayerPositions(bool animate) {
                          offsetY + CARDS_ORIGIN_Y + (CARD_H + 3) * player->gameCoords.y);
         
         if(animate) {
+            // TODO: Check if position changed and animate only if it did!
             animations.push_back(new Animation(player->sprite, AnimationDest::POS_X, pos.x, 0.5f));
             animations.push_back(new Animation(player->sprite, AnimationDest::POS_Y, pos.y, 0.5f));
         } else {
@@ -282,4 +299,23 @@ void PlayingState::makeFieldCardsAvailable() {
     for(FieldCard* card : fieldCards) {
         card->available = true;
     }
+}
+
+void PlayingState::moveBallToPlayer(Player* player) {
+    std::cout << "hey?" << std::endl;
+    // oh WOW
+    sf::Vector2f pos = sf::Vector2f((player->sprite.getPosition().x +
+                                         ((player->team == Team::BLUE) ? 8 : -2)),
+                                         player->sprite.getPosition().y + 12);
+    animations.push_back(new Animation(ball, AnimationDest::POS_X, pos.x, 0.5f));
+    animations.push_back(new Animation(ball, AnimationDest::POS_Y, pos.y, 0.5f));
+}
+
+void PlayingState::finishPlacement() {
+    task = Task::PlacementTransition;
+    playButton->disable();
+    
+    for(Player* player : players) player->setSelectable(false);
+    
+    needleVel = 1500.0f + (std::rand() % 300);
 }

@@ -71,7 +71,7 @@ public:
                 break;
         }
         
-        return true;
+        return clockval != duration;
     }
     
 private:
