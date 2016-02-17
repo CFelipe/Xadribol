@@ -34,15 +34,17 @@ PlayingState::PlayingState(Game* game)
     
     roulette.setTextureRect(sf::IntRect(0, 0, 68, 68));
     roulette.setTexture(game->texmgr.getRef("roulette"));
-    roulette.setPosition(sf::Vector2f(400 - 68 / 2, 100));
+    roulette.setPosition(sf::Vector2f(400 - 68 / 2, 141));
     
     rouletteNeedle.setTextureRect(sf::IntRect(0, 0, 10, 30));
     rouletteNeedle.setTexture(game->texmgr.getRef("roulette_needle"));
-    rouletteNeedle.setPosition(sf::Vector2f(400, 134));
+    rouletteNeedle.setPosition(sf::Vector2f(400, 175));
     rouletteNeedle.setOrigin(sf::Vector2f(5, 21));
     rouletteNeedle.setRotation(0);
     
-    playButton = new TextButton("Jogar", 32, game->gameFont, light);
+    // Use sf::String(L"String"); for accents etc
+    playButton = new TextButton(sf::String(L"Começar"), 32, game->gameFont,
+                                light, dark);
     playButton->setPosition(sf::Vector2f(400, 100));
     
     drawableEntities.push_back(&blueBar);
@@ -126,7 +128,7 @@ void PlayingState::handleInput() {
                                                      event.mouseButton.y);
                 
                 if(playButton->contains(mousePos)) {
-                    vel = 1500.0f;
+                    needleVel = 1500.0f;
                     return;
                 }
                 
@@ -177,13 +179,13 @@ void PlayingState::update(const float dt) {
         card->contains(sf::Mouse::getPosition(game->window));
     }
     
-    iads += vel * dt;
-    rouletteNeedle.setRotation(iads);
+    needleRotation += needleVel * dt;
+    rouletteNeedle.setRotation(needleRotation);
     
-    if(vel > 0) {
-        vel -= 500.0f * dt;
+    if(needleVel > 0) {
+        needleVel -= 700.0f * dt;
     } else {
-        vel = 0;
+        needleVel = 0;
     }
     
     updatePlayerHalo();

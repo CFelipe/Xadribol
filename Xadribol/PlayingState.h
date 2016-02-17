@@ -39,10 +39,10 @@ public:
     sf::Sprite rouletteNeedle;
     sf::Sprite playerHalo;
     sf::Sprite ball;
+    sf::Sprite cursorHelper;
     
-    // these are meant to be removed as soon as possible
-    float iads = 0;
-    float vel = 1500.0f;
+    float needleRotation = 0.0f;
+    float needleVel = 0.0f;
     
     void selectPlayer(Player* player);
     sf::Vector2f getCardPosition(sf::Vector2i gameCoords);
