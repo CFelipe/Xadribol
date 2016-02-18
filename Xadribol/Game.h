@@ -7,9 +7,6 @@
 #include <list>
 #include <vector>
 #include "TextureManager.h"
-#include "Player.h"
-#include "FieldCard.h"
-#include "Animation.h"
 
 const int PLAYER_W = 26;
 const int PLAYER_H = 26;

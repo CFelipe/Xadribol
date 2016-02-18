@@ -3,6 +3,10 @@
 
 #include "GameState.h"
 #include "TextButton.h"
+#include "Player.h"
+#include "FieldCard.h"
+#include "Animation.h"
+#include "ActionCard.h"
 
 enum class Task { Placement, PlacementTransition, Turn };
 
@@ -17,6 +21,7 @@ public:
     std::list<Animation*> animations;
     std::list<Player*> players;
     std::list<FieldCard*> fieldCards;
+    std::list<ActionCard*> actionCards;
     std::list<sf::Drawable*> drawableEntities; // maybe not the best idea but let's see
     //std::list<ActionCard*> actionCards;
     
@@ -59,6 +64,7 @@ public:
     void changeTurn();
     void changeTurn(Team team);
     void updateBallPosition();
+    void showCards();
 };
 
 #endif /* defined(__Xadribol__PlayingState__) */

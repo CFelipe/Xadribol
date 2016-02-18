@@ -3,83 +3,18 @@
 
 #include <math.h>
 
-enum class AnimationDest { POS_X, POS_Y, OPACITY };
-
 class Animation {
 public:
-    Animation(sf::Sprite& sprite, AnimationDest dest, float initialValue, float endValue, float duration, bool easing = false)
-    : sprite(sprite),
-      dest(dest),
-      initialValue(initialValue),
-      endValue(endValue),
-      clockval(0.0f),
+    Animation(float duration, bool easing = false)
+    : clockval(0.0f),
       duration(duration),
-      easing(easing)
-    {
-        switch(dest) {
-            case AnimationDest::POS_X:
-                sprite.setPosition(sf::Vector2f(initialValue, sprite.getPosition().y));
-                break;
-            case AnimationDest::POS_Y:
-                sprite.setPosition(sf::Vector2f(sprite.getPosition().x, initialValue));
-                break;
-            case AnimationDest::OPACITY:
-                sprite.setColor(sf::Color(255, 255, 255, (int) ((clockval / duration) * endValue)));
-                break;
-        }
-    }
+      easing(0.0f)
+    {}
     
-    Animation(sf::Sprite& sprite, AnimationDest dest, float endValue, float duration, bool easing = false)
-    : sprite(sprite),
-      dest(dest),
-      endValue(endValue),
-      clockval(0.0f),
-      duration(duration),
-      easing(easing)
-    {
-        switch(dest) {
-            case AnimationDest::POS_X:
-                initialValue = sprite.getPosition().x;
-                break;
-            case AnimationDest::POS_Y:
-                initialValue = sprite.getPosition().y;
-                break;
-            case AnimationDest::OPACITY:
-                std::cout << (int) sprite.getColor().a << std::endl;
-                initialValue = sprite.getColor().a;
-                break;
-        }
-    }
+    virtual bool update(const float dt) = 0;
     
-    bool update(const float dt) {
-        clockval += dt;
-        if(clockval > duration) clockval = duration;
-
-        switch(dest) {
-            case AnimationDest::POS_X:
-                sprite.setPosition(sf::Vector2f(//initialValue + (clockval / duration) * (endValue - initialValue),
-                                                easeOut(clockval, initialValue, endValue - initialValue, duration),
-                                                sprite.getPosition().y));
-                break;
-            case AnimationDest::POS_Y:
-                sprite.setPosition(sf::Vector2f(sprite.getPosition().x,
-                                                easeOut(clockval, initialValue, endValue - initialValue, duration)));
-                                                //initialValue + (clockval / duration) * (endValue - initialValue)));
-                break;
-            case AnimationDest::OPACITY:
-                sprite.setColor(sf::Color(255, 255, 255, (int) ((clockval / duration) * (endValue - initialValue))));
-                break;
-        }
-        
-        return clockval != duration;
-    }
-    
-private:
-    sf::Sprite& sprite;
-    AnimationDest dest;
+protected:
     float clockval;
-    float initialValue;
-    float endValue;
     float duration;
     bool easing;
     
@@ -100,6 +35,34 @@ private:
         if ((t/=d/2) < 1) return c/2 * pow(2, 10 * (t - 1)) + b;
         return c/2 * (-pow(2, -10 * --t) + 2) + b;
     }
+};
+
+class PosAnimation : public Animation {
+public:
+    PosAnimation(sf::Transformable& entity, sf::Vector2f endPos, float duration, bool easing = false)
+    : entity(entity),
+      initialPos(entity.getPosition()),
+      endPos(endPos),
+      Animation(duration, easing)
+    {}
+    
+    bool update(const float dt) {
+        clockval += dt;
+        if(clockval > duration) clockval = duration;
+        
+        sf::Vector2f pos;
+        pos.x = easeOut(clockval, initialPos.x, endPos.x - initialPos.x, duration);
+        pos.y = easeOut(clockval, initialPos.y, endPos.y - initialPos.y, duration);
+        entity.setPosition(pos);
+        
+        return clockval != duration;
+    }
+
+    
+private:
+    sf::Transformable& entity;
+    sf::Vector2f initialPos;
+    sf::Vector2f endPos;
 };
 
 #endif

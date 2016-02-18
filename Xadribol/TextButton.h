@@ -1,14 +1,15 @@
 #ifndef TextButton_h
 #define TextButton_h
 
-class TextButton : public sf::Transformable, public sf::Drawable  {
+class TextButton : public sf::Transformable, public sf::Drawable {
 public:
     TextButton(const sf::String& text, const unsigned int textSize, const sf::Font &font,
                const sf::Color color, const sf::Color backgroundColor)
     : textSize(textSize),
       color(color),
       backgroundColor(backgroundColor),
-      enabled(true)
+      enabled(true),
+      opacity(255)
     {
         textShape = sf::Text(text, font, textSize);
         textShapeShadow = sf::Text(text, font, textSize);
@@ -39,31 +40,26 @@ public:
                        topStroke.getGlobalBounds().top + getPosition().y + 3,
                        topStroke.getSize().x,
                        bottomStroke.getPosition().y - topStroke.getPosition().y).contains(point)) {
-            color.a = 200;
-            textShape.setColor(color);
-            topStroke.setFillColor(color);
-            bottomStroke.setFillColor(color);
-            textShapeShadow.setColor(backgroundColor);
-            textShape.setColor(color);
+            setOpacity(200);
             return true;
         } else {
-            color.a = 255;
-            topStroke.setFillColor(color);
-            bottomStroke.setFillColor(color);
-            textShapeShadow.setColor(backgroundColor);
-            textShape.setColor(color);
+            setOpacity(255);
             return false;
         }
     }
     
-    void disable() {
-        enabled = false;
-        color.a = 150;
-        backgroundColor.a = 150;
+    void setOpacity(unsigned char opacity) {
+        color.a = opacity;
+        backgroundColor.a = opacity;
         topStroke.setFillColor(color);
         bottomStroke.setFillColor(color);
         textShapeShadow.setColor(backgroundColor);
         textShape.setColor(color);
+    }
+    
+    void disable() {
+        enabled = false;
+        setOpacity(150);
     }
 private:
     sf::Text textShape;
@@ -74,6 +70,7 @@ private:
     sf::Color color;
     sf::Color backgroundColor;
     bool enabled;
+    char opacity;
     
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
         states.transform *= getTransform();

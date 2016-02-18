@@ -57,7 +57,7 @@ PlayingState::PlayingState(Game* game)
     drawableEntities.push_back(&rouletteNeedle);
     drawableEntities.push_back(playButton);
     
-    // Cards
+    // Field cards
     fieldCards.push_back(new FieldCard(game->texmgr.getRef("fieldcard_lu"),   sf::Vector2i(0, 0)));
     fieldCards.push_back(new FieldCard(game->texmgr.getRef("fieldcard_u"),    sf::Vector2i(1, 0)));
     fieldCards.push_back(new FieldCard(game->texmgr.getRef("fieldcard_cu"),   sf::Vector2i(2, 0)));
@@ -90,7 +90,6 @@ PlayingState::PlayingState(Game* game)
     playerHalo.setColor(sf::Color::Transparent);
     drawableEntities.push_back(&playerHalo);
     
-    
     for(Player* player : players) {
         drawableEntities.push_back(&player->sprite);
     }
@@ -104,15 +103,13 @@ PlayingState::PlayingState(Game* game)
     
     // ----------------------------------------------
     
-    sf::Vector2f pos1 = getCardPosition(sf::Vector2i(0, 0));
+    //sf::Vector2f pos1 = getCardPosition(sf::Vector2i(0, 0));
     for(FieldCard* card : fieldCards) {
         sf::Vector2f pos = getCardPosition(card->gameCoords);
         card->sprite.setPosition(pos);
         
         // Pompous introduction
-        //animationList.push_back(new Animation(card->sprite, AnimationDest::OPACITY, 0, 255, 1.0f));
-        //animationList.push_back(new Animation(card->sprite, AnimationDest::POS_X, pos1.x, pos.x, 1.0f));
-        //animationList.push_back(new Animation(card->sprite, AnimationDest::POS_Y, pos1.y, pos.y, 1.0f));
+        //animations.push_back(new PosAnimation(card->sprite, pos, 1.0f));
     }
     
     game->updateCursorHelper(false);
@@ -206,7 +203,6 @@ void PlayingState::update(const float dt) {
         }
     }
     
-    updateBallPosition();
     updatePlayerHalo();
 }
 
@@ -240,6 +236,10 @@ void PlayingState::selectPlayer(Player* player) {
     } else {
         playerHalo.setColor(sf::Color::Transparent);
     }
+    
+    if(task == Task::Turn) {
+        showCards();
+    }
 }
 
 void PlayingState::updatePlayerPositions(bool animate) {
@@ -267,8 +267,7 @@ void PlayingState::updatePlayerPositions(bool animate) {
         
         if(animate) {
             // TODO: Check if position changed and animate only if it did!
-            animations.push_back(new Animation(player->sprite, AnimationDest::POS_X, pos.x, 0.5f));
-            animations.push_back(new Animation(player->sprite, AnimationDest::POS_Y, pos.y, 0.5f));
+            animations.push_back(new PosAnimation(player->sprite, pos, 0.5f));
         } else {
             player->sprite.setPosition(pos);
         }
@@ -311,8 +310,7 @@ void PlayingState::moveBallToPlayer(Player* player, bool animate) {
     pos.x += (player->team == Team::BLUE) ? 8 : -2;
     
     if(animate) {
-        animations.push_back(new Animation(ball, AnimationDest::POS_X, pos.x, 0.5f));
-        animations.push_back(new Animation(ball, AnimationDest::POS_Y, pos.y, 0.5f));
+        animations.push_back(new PosAnimation(ball, pos, 0.5f));
     } else {
         ball.setPosition(pos);
     }
@@ -342,7 +340,18 @@ void PlayingState::changeTurn(Team team) {
 }
 
 void PlayingState::updateBallPosition() {
+    /*
     if(task == Task::Turn && ballPlayer != nullptr) {
         ball.setPosition(ballPlayer->sprite.getPosition());
+    }
+    */
+}
+
+void PlayingState::showCards() {
+    if(selectedPlayer != nullptr) {
+        actionCards.push_back(new ActionCard(game->texmgr.getRef("card_endturn_r"), Team::RED));
+    } else {
+        //
+        std::cout << "hide irrelevant cards" << std::endl;
     }
 }

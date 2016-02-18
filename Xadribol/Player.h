@@ -37,7 +37,6 @@ public:
     }
     
 private:
-    //char opacity;
     bool selectable;
 };
 
