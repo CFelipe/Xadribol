@@ -7,9 +7,9 @@ class Player {
 public:
     Player(const sf::Texture& texture, sf::Vector2i gameCoords, Team team, bool selectable = true)
     : gameCoords(gameCoords),
-      team(team),
-      selectable(selectable)
+      team(team)
     {
+        setSelectable(selectable);
         sprite.setTextureRect(sf::IntRect(0, 0, 26, 26));
         sprite.setTexture(texture);
     };

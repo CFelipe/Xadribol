@@ -6,7 +6,8 @@ PlayingState::PlayingState(Game* game)
     turn(0),
     scoreRed(0),
     scoreBlue(0),
-    selectedPlayer(nullptr)
+    selectedPlayer(nullptr),
+    ballPlayer(nullptr)
 {
     this->game = game;
     
@@ -113,7 +114,7 @@ PlayingState::PlayingState(Game* game)
         //animationList.push_back(new Animation(card->sprite, AnimationDest::POS_X, pos1.x, pos.x, 1.0f));
         //animationList.push_back(new Animation(card->sprite, AnimationDest::POS_Y, pos1.y, pos.y, 1.0f));
     }
-
+    
     game->updateCursorHelper(false);
     updatePlayerPositions(false);
 }
@@ -125,29 +126,31 @@ void PlayingState::handleInput() {
         if(event.type == sf::Event::Closed) {
             game->window.close();
         } else if(event.type == sf::Event::MouseButtonPressed) {
-            if(event.mouseButton.button == sf::Mouse::Left) {
-                sf::Vector2i mousePos = sf::Vector2i(event.mouseButton.x,
-                                                     event.mouseButton.y);
-                
-                if(playButton->contains(mousePos)) {
-                    finishPlacement();
-                    return;
-                }
-                
-                for(Player* player : players) {
-                    if(player->contains(mousePos)) {
-                        if(player->getSelectable()) {
-                            selectPlayer(player);
-                            return;
+            if(task != Task::PlacementTransition) {
+                if(event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2i mousePos = sf::Vector2i(event.mouseButton.x,
+                                                         event.mouseButton.y);
+                    
+                    if(playButton->contains(mousePos)) {
+                        finishPlacement();
+                        return;
+                    }
+                    
+                    for(Player* player : players) {
+                        if(player->contains(mousePos)) {
+                            if(player->getSelectable()) {
+                                selectPlayer(player);
+                                return;
+                            }
                         }
                     }
-                }
-                
-                for(FieldCard* card : fieldCards) {
-                    if(card->contains(mousePos)) {
-                        if(card->available) {
-                            moveSelectedPlayer(card->gameCoords);
-                            return;
+                    
+                    for(FieldCard* card : fieldCards) {
+                        if(card->contains(mousePos)) {
+                            if(card->available) {
+                                moveSelectedPlayer(card->gameCoords);
+                                return;
+                            }
                         }
                     }
                 }
@@ -158,9 +161,7 @@ void PlayingState::handleInput() {
 
 void PlayingState::update(const float dt) {
     sf::Vector2i mousePos = sf::Mouse::getPosition(game->window);
-    game->updateCursorHelper(false);
-    
-    std::cout << animations.size() << std::endl;
+    game->updateCursorHelper(task == Task::PlacementTransition, mousePos);
     
     std::list<Animation*>::iterator i = animations.begin();
     while(i != animations.end()) {
@@ -198,12 +199,14 @@ void PlayingState::update(const float dt) {
                 if(player->gameCoords == sf::Vector2i(2, 1) && selectedTeam == player->team) {
                     moveBallToPlayer(player);
                     task = Task::Turn;
+                    changeTurn(selectedTeam);
                     return;
                 }
             }
         }
     }
     
+    updateBallPosition();
     updatePlayerHalo();
 }
 
@@ -301,21 +304,45 @@ void PlayingState::makeFieldCardsAvailable() {
     }
 }
 
-void PlayingState::moveBallToPlayer(Player* player) {
-    std::cout << "hey?" << std::endl;
-    // oh WOW
-    sf::Vector2f pos = sf::Vector2f((player->sprite.getPosition().x +
-                                         ((player->team == Team::BLUE) ? 8 : -2)),
-                                         player->sprite.getPosition().y + 12);
-    animations.push_back(new Animation(ball, AnimationDest::POS_X, pos.x, 0.5f));
-    animations.push_back(new Animation(ball, AnimationDest::POS_Y, pos.y, 0.5f));
+void PlayingState::moveBallToPlayer(Player* player, bool animate) {
+    sf::Vector2f pos = sf::Vector2f(player->sprite.getPosition().x,
+                                    player->sprite.getPosition().y + 12);
+    
+    pos.x += (player->team == Team::BLUE) ? 8 : -2;
+    
+    if(animate) {
+        animations.push_back(new Animation(ball, AnimationDest::POS_X, pos.x, 0.5f));
+        animations.push_back(new Animation(ball, AnimationDest::POS_Y, pos.y, 0.5f));
+    } else {
+        ball.setPosition(pos);
+    }
+    
+    ballPlayer = player;
 }
 
 void PlayingState::finishPlacement() {
+    selectPlayer(nullptr);
     task = Task::PlacementTransition;
     playButton->disable();
     
-    for(Player* player : players) player->setSelectable(false);
-    
     needleVel = 1500.0f + (std::rand() % 300);
+}
+
+void PlayingState::changeTurn() {
+    changeTurn((turnTeam == Team::BLUE) ? Team::RED : Team::BLUE);
+}
+
+void PlayingState::changeTurn(Team team) {
+    selectPlayer(nullptr);
+    turnTeam = team;
+    
+    for(Player* player : players) {
+        player->setSelectable(player->team == turnTeam);
+    }
+}
+
+void PlayingState::updateBallPosition() {
+    if(task == Task::Turn && ballPlayer != nullptr) {
+        ball.setPosition(ballPlayer->sprite.getPosition());
+    }
 }

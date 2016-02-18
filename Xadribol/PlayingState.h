@@ -21,12 +21,14 @@ public:
     //std::list<ActionCard*> actionCards;
     
     unsigned short turn;
+    Team turnTeam;
     unsigned short scoreRed;
     unsigned short scoreBlue;
     
     Task task;
     
     Player* selectedPlayer;
+    Player* ballPlayer;
     
     const sf::Color dark = sf::Color(35, 35, 35, 255);
     const sf::Color light = sf::Color(242, 242, 242, 255);
@@ -52,8 +54,11 @@ public:
     void updatePlayerHalo();
     void moveSelectedPlayer(sf::Vector2i gameCoords);
     void makeFieldCardsAvailable();
-    void moveBallToPlayer(Player* player);
+    void moveBallToPlayer(Player* player, bool animate = true);
     void finishPlacement();
+    void changeTurn();
+    void changeTurn(Team team);
+    void updateBallPosition();
 };
 
 #endif /* defined(__Xadribol__PlayingState__) */

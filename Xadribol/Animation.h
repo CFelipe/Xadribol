@@ -86,15 +86,15 @@ private:
     // from https://github.com/jesusgollonet/ofpennereasing/blob/master/PennerEasing/Expo.cpp
     // http://easings.net/ has nice visualisations in case you want to change the equations
     
-    float easeIn(float t, float b, float c, float d) {
+    static float easeIn(float t, float b, float c, float d) {
         return (t==0) ? b : c * pow(2, 10 * (t/d - 1)) + b;
     }
     
-    float easeOut(float t, float b, float c, float d) {
+    static float easeOut(float t, float b, float c, float d) {
         return (t==d) ? b+c : c * (-pow(2, -10 * t/d) + 1) + b;
     }
     
-    float easeInOut(float t, float b, float c, float d) {
+    static float easeInOut(float t, float b, float c, float d) {
         if (t==0) return b;
         if (t==d) return b+c;
         if ((t/=d/2) < 1) return c/2 * pow(2, 10 * (t - 1)) + b;
