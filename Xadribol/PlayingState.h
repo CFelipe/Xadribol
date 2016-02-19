@@ -6,9 +6,10 @@
 #include "Player.h"
 #include "FieldCard.h"
 #include "Animation.h"
-#include "ActionCard.h"
 
 enum class Task { Placement, PlacementTransition, Turn };
+
+class ActionCard;
 
 class PlayingState : public GameState {
 public:
@@ -21,9 +22,8 @@ public:
     std::list<Animation*> animations;
     std::list<Player*> players;
     std::list<FieldCard*> fieldCards;
-    std::list<ActionCard*> actionCards;
+    std::list<ActionCard*> currentCards;
     std::list<sf::Drawable*> drawableEntities; // maybe not the best idea but let's see
-    //std::list<ActionCard*> actionCards;
     
     unsigned short turn;
     Team turnTeam;
@@ -49,6 +49,9 @@ public:
     sf::Sprite playerHalo;
     sf::Sprite ball;
     sf::Sprite cursorHelper;
+    
+    ActionCard* passCard;
+    ActionCard* moveCard;
     
     float needleRotation = 0.0f;
     float needleVel = 0.0f;

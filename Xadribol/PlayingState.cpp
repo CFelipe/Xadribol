@@ -1,5 +1,6 @@
 #include "PlayingState.h"
 #include <iostream>
+#include "ActionCard.h"
 
 PlayingState::PlayingState(Game* game)
     : task(Task::Placement),
@@ -25,14 +26,14 @@ PlayingState::PlayingState(Game* game)
     Don't forget to add drawables to drawableEntities when they're created, of course
     */
     
-    redBar.setSize(sf::Vector2f(800, 5));
+    redBar.setSize(sf::Vector2f(800, 7));
     redBar.setPosition(0, 50);
     redBar.setFillColor(red);
-    blueBar.setSize(sf::Vector2f(400, 5));
+    blueBar.setSize(sf::Vector2f(400, 7));
     blueBar.setPosition(0, 50);
     blueBar.setFillColor(blue);
-    actionBar.setPosition(0, 55);
-    actionBar.setSize(sf::Vector2f(800, 180));
+    actionBar.setPosition(0, 57);
+    actionBar.setSize(sf::Vector2f(800, 178));
     actionBar.setFillColor(dark);
     
     roulette.setTextureRect(sf::IntRect(0, 0, 68, 68));
@@ -56,6 +57,8 @@ PlayingState::PlayingState(Game* game)
     drawableEntities.push_back(&roulette);
     drawableEntities.push_back(&rouletteNeedle);
     drawableEntities.push_back(playButton);
+    
+    passCard = new PassCard(game->texmgr.getRef("card_endturn_r"));
     
     // Field cards
     fieldCards.push_back(new FieldCard(game->texmgr.getRef("fieldcard_lu"),   sf::Vector2i(0, 0)));
@@ -150,6 +153,13 @@ void PlayingState::handleInput() {
                             }
                         }
                     }
+                    
+                    for(ActionCard* card : currentCards) {
+                        if(card->contains(mousePos)) {
+                            card->action(this);
+                            return;
+                        }
+                    }
                 }
             }
         }
@@ -181,6 +191,11 @@ void PlayingState::update(const float dt) {
         card->contains(sf::Mouse::getPosition(game->window));
     }
     
+    
+    for(ActionCard* card : currentCards) {
+        card->contains(sf::Mouse::getPosition(game->window));
+    }
+    
     if(task == Task::PlacementTransition) {
         needleRotation += needleVel * dt;
         if(needleRotation > 360) needleRotation -= 360;
@@ -197,10 +212,10 @@ void PlayingState::update(const float dt) {
                                                   2.0f, Easing::INOUT));
             animations.push_back(new PosAnimation(roulette,
                                                   roulette.getPosition() + sf::Vector2f(600.0f, 0.0f),
-                                                  2.0f, Easing::INOUT));
+                                                  2.2f, Easing::INOUT));
             animations.push_back(new PosAnimation(rouletteNeedle,
                                                   rouletteNeedle.getPosition() + sf::Vector2f(600.0f, 0.0f),
-                                                  2.0f, Easing::INOUT));
+                                                  2.2f, Easing::INOUT));
             
             for(Player* player : players) {
                 if(player->gameCoords == sf::Vector2i(2, 1) && selectedTeam == player->team) {
@@ -241,6 +256,16 @@ void PlayingState::selectPlayer(Player* player) {
                 bool dim = ((selectedPlayer->team == Team::BLUE && card->gameCoords.x <= 2) ||
                             (selectedPlayer->team == Team::RED && card->gameCoords.x >= 2));
                 card->available = dim;
+            }
+        } else if(task == Task::Turn) {
+            for(ActionCard* card : currentCards) {
+                drawableEntities.remove(&card->sprite);
+            }
+            
+            currentCards.clear();
+            
+            for(FieldCard* card : fieldCards) {
+                card->available = false;
             }
         }
     } else {
@@ -361,10 +386,14 @@ void PlayingState::updateBallPosition() {
 }
 
 void PlayingState::showCards() {
+    // called from selectPlayer, even if selectedPlayer is nullptr
     if(selectedPlayer != nullptr) {
-        actionCards.push_back(new ActionCard(game->texmgr.getRef("card_endturn_r"), Team::RED));
+        passCard->sprite.setPosition(sf::Vector2f(20 + (50 * currentCards.size()), 73));
+        currentCards.push_back(passCard);
+        drawableEntities.push_back(&passCard->sprite);
     } else {
-        //
-        std::cout << "hide irrelevant cards" << std::endl;
+        for(ActionCard* card : currentCards) {
+            drawableEntities.remove(&card->sprite);
+        }
     }
 }
