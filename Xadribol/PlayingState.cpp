@@ -25,13 +25,13 @@ PlayingState::PlayingState(Game* game)
     Don't forget to add drawables to drawableEntities when they're created, of course
     */
     
-    blueBar.setSize(sf::Vector2f(400, 4));
+    redBar.setSize(sf::Vector2f(800, 5));
+    redBar.setPosition(0, 50);
+    redBar.setFillColor(red);
+    blueBar.setSize(sf::Vector2f(400, 5));
     blueBar.setPosition(0, 50);
     blueBar.setFillColor(blue);
-    redBar.setSize(sf::Vector2f(400, 4));
-    redBar.setPosition(400, 50);
-    redBar.setFillColor(red);
-    actionBar.setPosition(0, 54);
+    actionBar.setPosition(0, 55);
     actionBar.setSize(sf::Vector2f(800, 180));
     actionBar.setFillColor(dark);
     
@@ -50,8 +50,8 @@ PlayingState::PlayingState(Game* game)
                                 light, dark);
     playButton->setPosition(sf::Vector2f(400, 100));
     
-    drawableEntities.push_back(&blueBar);
     drawableEntities.push_back(&redBar);
+    drawableEntities.push_back(&blueBar);
     drawableEntities.push_back(&actionBar);
     drawableEntities.push_back(&roulette);
     drawableEntities.push_back(&rouletteNeedle);
@@ -192,6 +192,16 @@ void PlayingState::update(const float dt) {
             needleVel = 0;
             Team selectedTeam = (needleRotation >= 180.0f) ? Team::BLUE : Team::RED;
             
+            animations.push_back(new PosAnimation(*playButton,
+                                                  playButton->getPosition() + sf::Vector2f(600.0f, 0.0f),
+                                                  2.0f, Easing::INOUT));
+            animations.push_back(new PosAnimation(roulette,
+                                                  roulette.getPosition() + sf::Vector2f(600.0f, 0.0f),
+                                                  2.0f, Easing::INOUT));
+            animations.push_back(new PosAnimation(rouletteNeedle,
+                                                  rouletteNeedle.getPosition() + sf::Vector2f(600.0f, 0.0f),
+                                                  2.0f, Easing::INOUT));
+            
             for(Player* player : players) {
                 if(player->gameCoords == sf::Vector2i(2, 1) && selectedTeam == player->team) {
                     moveBallToPlayer(player);
@@ -267,7 +277,7 @@ void PlayingState::updatePlayerPositions(bool animate) {
         
         if(animate) {
             // TODO: Check if position changed and animate only if it did!
-            animations.push_back(new PosAnimation(player->sprite, pos, 0.5f));
+            animations.push_back(new PosAnimation(player->sprite, pos, 0.5f, Easing::OUT));
         } else {
             player->sprite.setPosition(pos);
         }
@@ -310,7 +320,7 @@ void PlayingState::moveBallToPlayer(Player* player, bool animate) {
     pos.x += (player->team == Team::BLUE) ? 8 : -2;
     
     if(animate) {
-        animations.push_back(new PosAnimation(ball, pos, 0.5f));
+        animations.push_back(new PosAnimation(ball, pos, 2.0f, Easing::INOUT));
     } else {
         ball.setPosition(pos);
     }
@@ -333,6 +343,9 @@ void PlayingState::changeTurn() {
 void PlayingState::changeTurn(Team team) {
     selectPlayer(nullptr);
     turnTeam = team;
+
+    sf::Vector2f blueBarScale((turnTeam == Team::BLUE) ? 2.0f : 0.0f, 1.0f);
+    animations.push_back(new ScaleAnimation(blueBar, blueBarScale, 2.0f, Easing::INOUT));
     
     for(Player* player : players) {
         player->setSelectable(player->team == turnTeam);
