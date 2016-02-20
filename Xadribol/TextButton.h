@@ -13,14 +13,14 @@ public:
     {
         textShape = sf::Text(text, font, textSize);
         textShapeShadow = sf::Text(text, font, textSize);
-        
+
         sf::FloatRect textRect = textShape.getLocalBounds();
         textShape.setOrigin((int) (textRect.left + textRect.width / 2.0f),
                             (int) (textRect.top  + textRect.height / 2.0f));
         textShape.setColor(color);
         textShapeShadow.setOrigin(textShape.getOrigin() + sf::Vector2f(0, -2));
         textShapeShadow.setColor(backgroundColor);
-        
+
         topStroke.setFillColor(color);
         topStroke.setSize(sf::Vector2f(textRect.width + 14, 2));
         topStroke.setPosition(textShape.getGlobalBounds().left - 7, getPosition().y - 20);
@@ -30,12 +30,10 @@ public:
         bottomStroke.setPosition(textShape.getGlobalBounds().left - 7,
                                  textShape.getGlobalBounds().top + getPosition().y + 30);
     }
-    
+
     bool contains(sf::Vector2i point) {
         if(!enabled) return false;
-        
-        sf::FloatRect textRect = textShape.getLocalBounds();
-        
+
         if(sf::IntRect(topStroke.getGlobalBounds().left  + getPosition().x,
                        topStroke.getGlobalBounds().top + getPosition().y + 3,
                        topStroke.getSize().x,
@@ -47,7 +45,7 @@ public:
             return false;
         }
     }
-    
+
     void setOpacity(unsigned char opacity) {
         color.a = opacity;
         backgroundColor.a = opacity;
@@ -56,7 +54,7 @@ public:
         textShapeShadow.setColor(backgroundColor);
         textShape.setColor(color);
     }
-    
+
     void disable() {
         enabled = false;
         setOpacity(150);
@@ -71,7 +69,7 @@ private:
     sf::Color backgroundColor;
     bool enabled;
     char opacity;
-    
+
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
         states.transform *= getTransform();
         target.draw(topStroke, states);
