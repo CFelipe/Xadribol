@@ -11,6 +11,8 @@ Como rodar
 - Baixe o SFML 2.3.2 (sources)
 - Siga [este guia](http://www.sfml-dev.org/tutorials/2.3/compile-with-cmake.php)
 - Ou, em vez de seguir o guia oficial, siga o meu (abaixo)
+- Clone o repositorio do git pro seu computador
+- Crie um projeto novo no Code::Blocks com o nome "Xadribol" na pasta criada pelo git ao clonar o repositorio 
 - No Code::Blocks, em Settings -> Compiler options, marque "Have g++ follow the C++11 ISO [...]"
 - Agora, se tudo der certo, "Build and run" roda o projeto direitinho
 
