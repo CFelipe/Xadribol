@@ -12,7 +12,7 @@ Como rodar
 - Siga [este guia](http://www.sfml-dev.org/tutorials/2.3/compile-with-cmake.php)
 - Ou, em vez de seguir o guia oficial, siga o meu (abaixo)
 - No Code::Blocks, em Settings -> Compiler options, marque "Have g++ follow the C++11 ISO [...]"
-- Agora (tomara que) "Build and run" rode o projeto direitinho
+- Agora, se tudo der certo, "Build and run" roda o projeto direitinho
 
 Meu guia para compilar o SFML
 -----
