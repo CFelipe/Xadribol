@@ -32,7 +32,9 @@ public:
     }
 
     bool contains(sf::Vector2i point) {
-        if(!enabled) return false;
+        if(!enabled) {
+            return false;
+        }
 
         if(sf::IntRect(topStroke.getGlobalBounds().left  + getPosition().x,
                        topStroke.getGlobalBounds().top + getPosition().y + 3,
