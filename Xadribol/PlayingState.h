@@ -7,7 +7,10 @@
 #include "FieldCard.h"
 #include "Animation.h"
 
-enum class Task { Placement, PlacementTransition, Turn };
+enum class Task { Placement,
+                  PlacementTransition,
+                  ActionSelection,
+                  FieldCardSelection };
 
 class ActionCard;
 
@@ -23,7 +26,7 @@ public:
     std::list<Player*> players;
     std::list<FieldCard*> fieldCards;
     std::list<ActionCard*> currentCards;
-    std::list<sf::Drawable*> drawableEntities; // maybe not the best idea but let's see
+    std::list<sf::Drawable*> drawableEntities;
     
     unsigned short turn;
     Team turnTeam;
@@ -50,8 +53,12 @@ public:
     sf::Sprite ball;
     sf::Sprite cursorHelper;
     
+    ActionCard* selectedAction;
+    
     ActionCard* passCard;
     ActionCard* moveCard;
+    
+    FieldCard* selectedFieldCard;
     
     float needleRotation = 0.0f;
     float needleVel = 0.0f;
@@ -61,13 +68,16 @@ public:
     void updatePlayerPositions(bool animate = true);
     void updatePlayerHalo();
     void moveSelectedPlayer(sf::Vector2i gameCoords);
-    void makeFieldCardsAvailable();
+    void makeFieldCardsAvailable(bool available = true);
     void moveBallToPlayer(Player* player, bool animate = true);
     void finishPlacement();
     void changeTurn();
     void changeTurn(Team team);
     void updateBallPosition();
     void showCards();
+    void addActionCardToList(ActionCard& card);
+    void removeActionCardFromList(ActionCard& card);
+    void selectFieldCard();
 };
 
 #endif /* defined(__Xadribol__PlayingState__) */

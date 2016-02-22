@@ -59,7 +59,11 @@ PlayingState::PlayingState(Game* game)
     drawableEntities.push_back(&rouletteNeedle);
     drawableEntities.push_back(playButton);
 
+    selectedAction = nullptr;
+    selectedFieldCard = nullptr;
+    
     passCard = new PassCard(game->texmgr.getRef("card_endturn_r"));
+    moveCard = new MoveCard(game->texmgr.getRef("card_move_b"));
 
     // Field cards
     fieldCards.push_back(new FieldCard(game->texmgr.getRef("fieldcard_lu"),   sf::Vector2i(0, 0)));
@@ -148,9 +152,14 @@ void PlayingState::handleInput() {
 
                     for(FieldCard* card : fieldCards) {
                         if(card->contains(mousePos)) {
-                            if(card->available) {
-                                moveSelectedPlayer(card->gameCoords);
-                                return;
+                            if(task == Task::Placement) {
+                                if(card->available) {
+                                    moveSelectedPlayer(card->gameCoords);
+                                    return;
+                                }
+                            } else if(task == Task::FieldCardSelection) {
+                                selectedFieldCard = card;
+                                selectedAction->action2(this);
                             }
                         }
                     }
@@ -223,7 +232,7 @@ void PlayingState::update(const float dt) {
             for(Player* player : players) {
                 if(player->gameCoords == sf::Vector2i(2, 1) && selectedTeam == player->team) {
                     moveBallToPlayer(player);
-                    task = Task::Turn;
+                    task = Task::ActionSelection;
                     changeTurn(selectedTeam);
                     return;
                 }
@@ -260,22 +269,21 @@ void PlayingState::selectPlayer(Player* player) {
                             (selectedPlayer->team == Team::RED && card->gameCoords.x >= 2));
                 card->available = dim;
             }
-        } else if(task == Task::Turn) {
+        } else if(task == Task::ActionSelection) {
+            addActionCardToList(*moveCard);
+            /*
             for(ActionCard* card : currentCards) {
                 drawableEntities.remove(&card->sprite);
             }
 
             currentCards.clear();
-
-            for(FieldCard* card : fieldCards) {
-                card->available = false;
-            }
+             */
         }
     } else {
         playerHalo.setColor(sf::Color::Transparent);
     }
 
-    if(task == Task::Turn) {
+    if(task == Task::ActionSelection) {
         showCards();
     }
 }
@@ -335,9 +343,9 @@ void PlayingState::moveSelectedPlayer(sf::Vector2i gameCoords) {
     }
 }
 
-void PlayingState::makeFieldCardsAvailable() {
+void PlayingState::makeFieldCardsAvailable(bool available) {
     for(FieldCard* card : fieldCards) {
-        card->available = true;
+        card->available = available;
     }
 }
 
@@ -369,8 +377,15 @@ void PlayingState::changeTurn() {
 }
 
 void PlayingState::changeTurn(Team team) {
+    for(ActionCard* card : currentCards) {
+        drawableEntities.remove(&card->sprite);
+    }
+    
+    currentCards.clear();
+    
     selectPlayer(nullptr);
     turnTeam = team;
+    addActionCardToList(*passCard);
 
     sf::Vector2f blueBarScale((turnTeam == Team::BLUE) ? 2.0f : 0.0f, 1.0f);
     animations.push_back(new ScaleAnimation(blueBar, blueBarScale, 2.0f, Easing::INOUT));
@@ -391,12 +406,22 @@ void PlayingState::updateBallPosition() {
 void PlayingState::showCards() {
     // called from selectPlayer, even if selectedPlayer is nullptr
     if(selectedPlayer != nullptr) {
-        passCard->sprite.setPosition(sf::Vector2f(20 + (50 * currentCards.size()), 73));
-        currentCards.push_back(passCard);
-        drawableEntities.push_back(&passCard->sprite);
+        // todo
     } else {
         for(ActionCard* card : currentCards) {
-            drawableEntities.remove(&card->sprite);
+            //drawableEntities.remove(&card->sprite);
         }
     }
+}
+
+void PlayingState::addActionCardToList(ActionCard& card) {
+    sf::Vector2f cardPos(20 + (110 * currentCards.size()), 76);
+    card.sprite.setPosition(cardPos - sf::Vector2f(0, -10.0f));
+    animations.push_back(new PosAnimation(card.sprite, cardPos, 0.5f, Easing::OUT));
+    currentCards.push_back(&card);
+    drawableEntities.push_back(&card.sprite);
+}
+
+void PlayingState::removeActionCardFromList(ActionCard& card) {
+    // TODO
 }

@@ -28,6 +28,7 @@ public:
     Team team;
     
     virtual void action(PlayingState* playingState) = 0;
+    virtual void action2(PlayingState* playingState) = 0;
     
     void setSelectable(bool selectable) {
         this->selectable = selectable;
@@ -51,6 +52,43 @@ public:
     
     void action(PlayingState* playingState) {
         playingState->changeTurn();
+    }
+    
+    void action2(PlayingState* playingState) {}
+};
+
+class MoveCard : public ActionCard {
+public:
+    MoveCard(const sf::Texture& texture, bool selectable = true)
+    : ActionCard(texture, selectable)
+    {}
+    
+    void action(PlayingState* playingState) override {
+        for(FieldCard* card : playingState->fieldCards) {
+            if(card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1, -1) ||
+               card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1,  0) ||
+               card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1,  1) ||
+               card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 0, -1) ||
+               card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 0,  1) ||
+               card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1, -1) ||
+               card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1,  0) ||
+               card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1,  1)) {
+                card->available = true;
+            } else {
+                card->available = false;
+            }
+        }
+        
+        playingState->selectedAction = playingState->moveCard;
+
+        playingState->task = Task::FieldCardSelection;
+    }
+    
+    void action2(PlayingState* playingState) override {
+        playingState->moveSelectedPlayer(playingState->selectedFieldCard->gameCoords);
+        playingState->selectedAction = nullptr;
+        playingState->selectedFieldCard = nullptr;
+        playingState->task = Task::ActionSelection;
     }
 };
 
