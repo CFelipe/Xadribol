@@ -10,6 +10,7 @@
 enum class Task { Placement,
                   PlacementTransition,
                   ActionSelection,
+                  ActionSecondary,
                   FieldCardSelection };
 
 class ActionCard;
@@ -55,8 +56,13 @@ public:
     
     ActionCard* selectedAction;
     
-    ActionCard* passCard;
+    ActionCard* endTurnCard;
     ActionCard* moveCard;
+    ActionCard* passCard;
+    ActionCard* kickCard;
+    ActionCard* defendCard;
+    ActionCard* stealCard;
+    ActionCard* dribbleCard;
     
     FieldCard* selectedFieldCard;
     
@@ -64,20 +70,22 @@ public:
     float needleVel = 0.0f;
     
     void selectPlayer(Player* player);
-    sf::Vector2f getCardPosition(sf::Vector2i gameCoords);
-    void updatePlayerPositions(bool animate = true);
-    void updatePlayerHalo();
     void moveSelectedPlayer(sf::Vector2i gameCoords);
     void makeFieldCardsAvailable(bool available = true);
     void moveBallToPlayer(Player* player, bool animate = true);
     void finishPlacement();
     void changeTurn();
-    void changeTurn(Team team);
-    void updateBallPosition();
     void showCards();
+    
+private:
+    sf::Vector2f getCardPosition(sf::Vector2i gameCoords);
+    void updatePlayerPositions(bool animate = true);
+    void updatePlayerHalo();
     void addActionCardToList(ActionCard& card);
     void removeActionCardFromList(ActionCard& card);
-    void selectFieldCard();
+    void getBallPosition(Player* player);
+    void changeTurn(Team team);
+    void updateBallPosition();
 };
 
 #endif /* defined(__Xadribol__PlayingState__) */

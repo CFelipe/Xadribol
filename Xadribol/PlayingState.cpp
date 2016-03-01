@@ -1,5 +1,6 @@
 #include "PlayingState.h"
 #include <iostream>
+#include <algorithm>
 #include "ActionCard.h"
 
 PlayingState::PlayingState(Game* game)
@@ -62,8 +63,13 @@ PlayingState::PlayingState(Game* game)
     selectedAction = nullptr;
     selectedFieldCard = nullptr;
     
-    passCard = new PassCard(game->texmgr.getRef("card_endturn_r"));
+    endTurnCard = new EndTurnCard(game->texmgr.getRef("card_endturn_r"));
     moveCard = new MoveCard(game->texmgr.getRef("card_move_b"));
+    passCard = new PassCard(game->texmgr.getRef("card_pass_b"));
+    kickCard = new KickCard(game->texmgr.getRef("card_kick_b"));
+    defendCard = new DefendCard(game->texmgr.getRef("card_defend_r"));
+    stealCard = new StealCard(game->texmgr.getRef("card_steal_r"));
+    dribbleCard = new DribbleCard(game->texmgr.getRef("card_dribble_b"));
 
     // Field cards
     fieldCards.push_back(new FieldCard(game->texmgr.getRef("fieldcard_lu"),   sf::Vector2i(0, 0)));
@@ -157,9 +163,9 @@ void PlayingState::handleInput() {
                                     moveSelectedPlayer(card->gameCoords);
                                     return;
                                 }
-                            } else if(task == Task::FieldCardSelection) {
+                            } else if(task == Task::FieldCardSelection && card->available) {
                                 selectedFieldCard = card;
-                                selectedAction->action2(this);
+                                selectedAction->action(this);
                             }
                         }
                     }
@@ -271,16 +277,32 @@ void PlayingState::selectPlayer(Player* player) {
             }
         } else if(task == Task::ActionSelection) {
             addActionCardToList(*moveCard);
-            /*
-            for(ActionCard* card : currentCards) {
-                drawableEntities.remove(&card->sprite);
+            
+            if(ballPlayer->team == player->team) {
+                // Attack-specific cards
+                addActionCardToList(*passCard);
+                addActionCardToList(*kickCard);
+                addActionCardToList(*dribbleCard);
+            } else {
+                // Defense-specific cards
+                addActionCardToList(*defendCard);
+                addActionCardToList(*stealCard);
             }
-
-            currentCards.clear();
-             */
         }
     } else {
+        // The method checks if the card is in the list so don't worry
+        removeActionCardFromList(*moveCard);
+        removeActionCardFromList(*passCard);
+        removeActionCardFromList(*kickCard);
+        removeActionCardFromList(*dribbleCard);
+        removeActionCardFromList(*defendCard);
+        removeActionCardFromList(*stealCard);
+        
         playerHalo.setColor(sf::Color::Transparent);
+        for(FieldCard* card : fieldCards) {
+            card->available = true;
+        }
+
     }
 
     if(task == Task::ActionSelection) {
@@ -311,9 +333,22 @@ void PlayingState::updatePlayerPositions(bool animate) {
         sf::Vector2f pos(offsetX + CARDS_ORIGIN_X + (CARD_W + 4) * player->gameCoords.x,
                          offsetY + CARDS_ORIGIN_Y + (CARD_H + 3) * player->gameCoords.y);
 
+        if(player == ballPlayer) {
+            sf::Vector2f ballPos = sf::Vector2f(pos.x,
+                                                pos.y + 12);
+            
+            ballPos.x += (player->team == Team::BLUE) ? 8 : -2;
+            
+            if(animate) {
+                animations.push_back(new PosAnimation(ball, ballPos, 0.8f, Easing::OUT));
+            } else {
+                ball.setPosition(ballPos);
+            }
+        }
+        
         if(animate) {
             // TODO: Check if position changed and animate only if it did!
-            animations.push_back(new PosAnimation(player->sprite, pos, 0.5f, Easing::OUT));
+            animations.push_back(new PosAnimation(player->sprite, pos, 0.8f, Easing::INOUT));
         } else {
             player->sprite.setPosition(pos);
         }
@@ -385,7 +420,7 @@ void PlayingState::changeTurn(Team team) {
     
     selectPlayer(nullptr);
     turnTeam = team;
-    addActionCardToList(*passCard);
+    addActionCardToList(*endTurnCard);
 
     sf::Vector2f blueBarScale((turnTeam == Team::BLUE) ? 2.0f : 0.0f, 1.0f);
     animations.push_back(new ScaleAnimation(blueBar, blueBarScale, 2.0f, Easing::INOUT));
@@ -415,13 +450,18 @@ void PlayingState::showCards() {
 }
 
 void PlayingState::addActionCardToList(ActionCard& card) {
-    sf::Vector2f cardPos(20 + (110 * currentCards.size()), 76);
-    card.sprite.setPosition(cardPos - sf::Vector2f(0, -10.0f));
-    animations.push_back(new PosAnimation(card.sprite, cardPos, 0.5f, Easing::OUT));
-    currentCards.push_back(&card);
-    drawableEntities.push_back(&card.sprite);
+    if(std::find(currentCards.begin(), currentCards.end(), &card) == currentCards.end()) {
+        sf::Vector2f cardPos(20 + (110 * currentCards.size()), 76);
+        card.sprite.setPosition(cardPos - sf::Vector2f(0, -10.0f));
+        animations.push_back(new PosAnimation(card.sprite, cardPos, 0.5f, Easing::OUT));
+        currentCards.push_back(&card);
+        drawableEntities.push_back(&card.sprite);
+    }
 }
 
 void PlayingState::removeActionCardFromList(ActionCard& card) {
-    // TODO
+    if(std::find(currentCards.begin(), currentCards.end(), &card) != currentCards.end()) {
+        currentCards.remove(&card);
+        drawableEntities.remove(&card.sprite);
+    }
 }

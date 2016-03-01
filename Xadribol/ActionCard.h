@@ -3,6 +3,8 @@
 
 #include "PlayingState.h"
 
+enum class CardType {TEAM, PLAYER};
+
 class ActionCard {
 public:
     ActionCard(const sf::Texture& texture, bool selectable = true) {
@@ -28,7 +30,6 @@ public:
     Team team;
     
     virtual void action(PlayingState* playingState) = 0;
-    virtual void action2(PlayingState* playingState) = 0;
     
     void setSelectable(bool selectable) {
         this->selectable = selectable;
@@ -44,17 +45,15 @@ private:
     bool selectable;
 };
 
-class PassCard : public ActionCard {
+class EndTurnCard : public ActionCard {
 public:
-    PassCard(const sf::Texture& texture, bool selectable = true)
+    EndTurnCard(const sf::Texture& texture, bool selectable = true)
     : ActionCard(texture, selectable)
     {}
     
     void action(PlayingState* playingState) {
         playingState->changeTurn();
     }
-    
-    void action2(PlayingState* playingState) {}
 };
 
 class MoveCard : public ActionCard {
@@ -64,31 +63,87 @@ public:
     {}
     
     void action(PlayingState* playingState) override {
-        for(FieldCard* card : playingState->fieldCards) {
-            if(card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1, -1) ||
-               card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1,  0) ||
-               card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1,  1) ||
-               card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 0, -1) ||
-               card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 0,  1) ||
-               card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1, -1) ||
-               card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1,  0) ||
-               card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1,  1)) {
-                card->available = true;
-            } else {
-                card->available = false;
-            }
-        }
-        
         playingState->selectedAction = playingState->moveCard;
-
-        playingState->task = Task::FieldCardSelection;
+        
+        if(playingState->task == Task::ActionSelection) {
+            for(FieldCard* card : playingState->fieldCards) {
+                if(card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1, -1) ||
+                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1,  0) ||
+                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1,  1) ||
+                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 0, -1) ||
+                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 0,  1) ||
+                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1, -1) ||
+                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1,  0) ||
+                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1,  1)) {
+                    card->available = true;
+                } else {
+                    card->available = false;
+                }
+                
+                playingState->task = Task::FieldCardSelection;
+            }
+        } else if(playingState->task == Task::FieldCardSelection) {
+            playingState->moveSelectedPlayer(playingState->selectedFieldCard->gameCoords);
+            playingState->selectedAction = nullptr;
+            playingState->selectedFieldCard = nullptr;
+            
+            playingState->task = Task::ActionSelection;
+        }
     }
+};
+
+// Caio
+class PassCard : public ActionCard {
+public:
+    PassCard(const sf::Texture& texture, bool selectable = true)
+    : ActionCard(texture, selectable)
+    {}
     
-    void action2(PlayingState* playingState) override {
-        playingState->moveSelectedPlayer(playingState->selectedFieldCard->gameCoords);
-        playingState->selectedAction = nullptr;
-        playingState->selectedFieldCard = nullptr;
-        playingState->task = Task::ActionSelection;
+    void action(PlayingState* playingState) override {
+    }
+};
+
+// Victor
+class KickCard : public ActionCard {
+public:
+    KickCard(const sf::Texture& texture, bool selectable = true)
+    : ActionCard(texture, selectable)
+    {}
+    
+    void action(PlayingState* playingState) override {
+    }
+};
+
+// Valmir
+class DribbleCard : public ActionCard {
+public:
+    DribbleCard(const sf::Texture& texture, bool selectable = true)
+    : ActionCard(texture, selectable)
+    {}
+    
+    void action(PlayingState* playingState) override {
+    }
+};
+
+// Victor
+class DefendCard : public ActionCard {
+public:
+    DefendCard(const sf::Texture& texture, bool selectable = true)
+    : ActionCard(texture, selectable)
+    {}
+    
+    void action(PlayingState* playingState) override {
+    }
+};
+
+// Valmir
+class StealCard : public ActionCard {
+public:
+    StealCard(const sf::Texture& texture, bool selectable = true)
+    : ActionCard(texture, selectable)
+    {}
+    
+    void action(PlayingState* playingState) override {
     }
 };
 
