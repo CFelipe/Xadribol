@@ -3,7 +3,7 @@
 
 #include "PlayingState.h"
 
-enum class CardType {TEAM, PLAYER};
+//enum class CardType {TEAM, PLAYER};
 
 class ActionCard {
 public:
@@ -67,19 +67,22 @@ public:
         
         if(playingState->task == Task::ActionSelection) {
             for(FieldCard* card : playingState->fieldCards) {
-                if(card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1, -1) ||
+                if(//card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1, -1) ||
                    card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1,  0) ||
-                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1,  1) ||
+                   //card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1,  1) ||
                    card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 0, -1) ||
                    card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 0,  1) ||
-                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1, -1) ||
-                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1,  0) ||
-                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1,  1)) {
+                   //card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1, -1) ||
+                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1,  0)
+                   //card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1,  1)
+                   )
+                {
                     card->available = true;
                 } else {
                     card->available = false;
                 }
                 
+                playingState->hideActionCards();
                 playingState->task = Task::FieldCardSelection;
             }
         } else if(playingState->task == Task::FieldCardSelection) {
@@ -87,6 +90,7 @@ public:
             playingState->selectedAction = nullptr;
             playingState->selectedFieldCard = nullptr;
             
+            playingState->endAction();
             playingState->task = Task::ActionSelection;
         }
     }

@@ -59,7 +59,7 @@ Game::Game() {
     texmgr.loadTexture("card_dribble_b", "card_driblar_b.png");
     texmgr.loadTexture("card_move_b", "card_mover_b.png");
     texmgr.loadTexture("card_endturn_r", "card_passar_r.png"); // take note
-    texmgr.loadTexture("card_steal_r", "card_passar_r.png");
+    texmgr.loadTexture("card_steal_r", "card_roubar_r.png");
     texmgr.loadTexture("card_pass_b", "card_tocar_b.png");
 
     texmgr.loadTexture("fieldcard_bl", "fieldcard_blank.png"); // bl for blank

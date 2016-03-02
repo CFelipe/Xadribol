@@ -171,7 +171,7 @@ void PlayingState::handleInput() {
                     }
 
                     for(ActionCard* card : currentCards) {
-                        if(card->contains(mousePos)) {
+                        if(card->contains(mousePos) && task == Task::ActionSelection) {
                             card->action(this);
                             return;
                         }
@@ -304,10 +304,6 @@ void PlayingState::selectPlayer(Player* player) {
         }
 
     }
-
-    if(task == Task::ActionSelection) {
-        showCards();
-    }
 }
 
 void PlayingState::updatePlayerPositions(bool animate) {
@@ -430,25 +426,6 @@ void PlayingState::changeTurn(Team team) {
     }
 }
 
-void PlayingState::updateBallPosition() {
-    /*
-    if(task == Task::Turn && ballPlayer != nullptr) {
-        ball.setPosition(ballPlayer->sprite.getPosition());
-    }
-    */
-}
-
-void PlayingState::showCards() {
-    // called from selectPlayer, even if selectedPlayer is nullptr
-    if(selectedPlayer != nullptr) {
-        // todo
-    } else {
-        for(ActionCard* card : currentCards) {
-            //drawableEntities.remove(&card->sprite);
-        }
-    }
-}
-
 void PlayingState::addActionCardToList(ActionCard& card) {
     if(std::find(currentCards.begin(), currentCards.end(), &card) == currentCards.end()) {
         sf::Vector2f cardPos(20 + (110 * currentCards.size()), 76);
@@ -460,8 +437,21 @@ void PlayingState::addActionCardToList(ActionCard& card) {
 }
 
 void PlayingState::removeActionCardFromList(ActionCard& card) {
-    if(std::find(currentCards.begin(), currentCards.end(), &card) != currentCards.end()) {
         currentCards.remove(&card);
         drawableEntities.remove(&card.sprite);
+}
+
+void PlayingState::hideActionCards() {
+    for(ActionCard* card : currentCards) {
+        if(card != selectedAction) {
+            drawableEntities.remove(&card->sprite);
+        } else {
+            sf::Vector2f cardPos(20, 76);
+            animations.push_back(new PosAnimation(card->sprite, cardPos, 0.5f, Easing::OUT));
+        }
     }
+}
+
+void PlayingState::endAction() {
+    drawableEntities.push_back(&endTurnCard->sprite);
 }

@@ -36,6 +36,7 @@ public:
     
     Task task;
     
+    ActionCard* selectedAction;
     Player* selectedPlayer;
     Player* ballPlayer;
     
@@ -53,8 +54,6 @@ public:
     sf::Sprite playerHalo;
     sf::Sprite ball;
     sf::Sprite cursorHelper;
-    
-    ActionCard* selectedAction;
     
     ActionCard* endTurnCard;
     ActionCard* moveCard;
@@ -75,7 +74,9 @@ public:
     void moveBallToPlayer(Player* player, bool animate = true);
     void finishPlacement();
     void changeTurn();
-    void showCards();
+    void changeTask(Task& task);
+    void hideActionCards();
+    void endAction();
     
 private:
     sf::Vector2f getCardPosition(sf::Vector2i gameCoords);
@@ -85,7 +86,6 @@ private:
     void removeActionCardFromList(ActionCard& card);
     void getBallPosition(Player* player);
     void changeTurn(Team team);
-    void updateBallPosition();
 };
 
 #endif /* defined(__Xadribol__PlayingState__) */
