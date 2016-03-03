@@ -149,7 +149,12 @@ void PlayingState::handleInput() {
 
                     for(Player* player : players) {
                         if(player->contains(mousePos)) {
-                            if(player->getSelectable()) {
+                            if(task == Task::PassPlayerSelection) {
+                                if(player->getSelectable()) {
+                                    selectPlayer(player);
+                                    selectedAction->action(this);
+                                }
+                            } else if(player->getSelectable()) {
                                 selectPlayer(player);
                                 return;
                             }
@@ -264,6 +269,14 @@ void PlayingState::draw(const float dt) {
 void PlayingState::selectPlayer(Player* player) {
     selectedPlayer = player;
 
+    // The method checks if the card is in the list so don't worry
+        removeActionCardFromList(*moveCard);
+        removeActionCardFromList(*passCard);
+        removeActionCardFromList(*kickCard);
+        removeActionCardFromList(*dribbleCard);
+        removeActionCardFromList(*defendCard);
+        removeActionCardFromList(*stealCard);
+
     if(player != nullptr) {
         playerHalo.setTexture(player->team == Team::BLUE ? game->texmgr.getRef("playerhalo_b") :
                                                            game->texmgr.getRef("playerhalo_r"));
@@ -278,25 +291,18 @@ void PlayingState::selectPlayer(Player* player) {
         } else if(task == Task::ActionSelection) {
             addActionCardToList(*moveCard);
             
-            if(ballPlayer->team == player->team) {
+            if(ballPlayer->team == player->team && selectedPlayer == ballPlayer) {
                 // Attack-specific cards
                 addActionCardToList(*passCard);
                 addActionCardToList(*kickCard);
                 addActionCardToList(*dribbleCard);
-            } else {
+            } else if(ballPlayer->team != player->team){
                 // Defense-specific cards
                 addActionCardToList(*defendCard);
                 addActionCardToList(*stealCard);
             }
         }
     } else {
-        // The method checks if the card is in the list so don't worry
-        removeActionCardFromList(*moveCard);
-        removeActionCardFromList(*passCard);
-        removeActionCardFromList(*kickCard);
-        removeActionCardFromList(*dribbleCard);
-        removeActionCardFromList(*defendCard);
-        removeActionCardFromList(*stealCard);
         
         playerHalo.setColor(sf::Color::Transparent);
         for(FieldCard* card : fieldCards) {
