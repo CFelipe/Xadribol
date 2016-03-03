@@ -81,14 +81,24 @@ public:
                 } else {
                     card->available = false;
                 }
-                
-                playingState->hideActionCards();
-                playingState->task = Task::FieldCardSelection;
             }
+            for(Player* player : playingState->players) {
+                if(player != playingState->selectedPlayer) {
+                    player->setSelectable(false);
+                }
+            }
+            playingState->hideActionCards();
+            playingState->task = Task::FieldCardSelection;
         } else if(playingState->task == Task::FieldCardSelection) {
             playingState->moveSelectedPlayer(playingState->selectedFieldCard->gameCoords);
             playingState->selectedAction = nullptr;
             playingState->selectedFieldCard = nullptr;
+
+            for(Player* player : playingState->players) {
+                if(player->team == playingState->turnTeam) {
+                    player->setSelectable(true);
+                }
+            }
             
             playingState->endAction();
             playingState->task = Task::ActionSelection;
@@ -104,6 +114,37 @@ public:
     {}
     
     void action(PlayingState* playingState) override {
+        playingState->selectedAction = playingState->passCard;
+
+        if(playingState->task == Task::ActionSelection) {
+            playingState->hideActionCards();
+
+            playingState->makeFieldCardsAvailable(false);
+            for(Player* player : playingState->players) {
+                if(player != playingState->ballPlayer && player->team == playingState->turnTeam) {
+                    player->setSelectable(true);
+                } else {
+                    player->setSelectable(false);
+                }
+            }
+
+            playingState->task = Task::PassPlayerSelection;
+        } else if(playingState->task == Task::PassPlayerSelection) {
+            playingState->moveBallToPlayer(playingState->selectedPlayer);
+            playingState->selectedAction = nullptr;
+            playingState->selectedPlayer = nullptr;
+
+            playingState->makeFieldCardsAvailable(true);
+            for(Player* player : playingState->players) {
+                if(player->team == playingState->turnTeam) {
+                    player->setSelectable(true);
+                }
+            }
+
+            playingState->endAction();
+            playingState->selectPlayer(nullptr);
+            playingState->task = Task::ActionSelection;
+        }
     }
 };
 

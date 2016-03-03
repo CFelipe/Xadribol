@@ -11,7 +11,8 @@ enum class Task { Placement,
                   PlacementTransition,
                   ActionSelection,
                   ActionSecondary,
-                  FieldCardSelection };
+                  FieldCardSelection,
+                  PassPlayerSelection };
 
 class ActionCard;
 
