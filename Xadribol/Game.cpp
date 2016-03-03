@@ -48,6 +48,8 @@ void Game::gameLoop() {
 Game::Game() {
     this->window.create(sf::VideoMode(800, 600), "Xadribol", sf::Style::Close);
 
+    this->window.setFramerateLimit(60);
+    
     #ifdef _WIN32
     gameFont.loadFromFile("Xadribol/resources/inconsolata.otf");
     #elif __APPLE__

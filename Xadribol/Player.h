@@ -5,9 +5,10 @@ enum class Team { BLUE, RED };
 
 class Player {
 public:
-    Player(const sf::Texture& texture, sf::Vector2i gameCoords, Team team, bool selectable = true)
+    Player(const sf::Texture& texture, sf::Vector2i gameCoords, Team team, bool selectable, bool goalie = false)
     : gameCoords(gameCoords),
-      team(team)
+      team(team),
+      goalie(goalie)
     {
         setSelectable(selectable);
         sprite.setTextureRect(sf::IntRect(0, 0, 26, 26));
@@ -25,6 +26,7 @@ public:
     sf::Sprite sprite;
     sf::Vector2i gameCoords;
     Team team;
+    bool goalie;
     
     void setSelectable(bool selectable) {
         this->selectable = selectable;

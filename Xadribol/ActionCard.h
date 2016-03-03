@@ -14,14 +14,15 @@ public:
     };
     
     bool contains(sf::Vector2i point) {
-        sf::Color color = sprite.getColor();
+        char opacity = 255;
+        if(!selectable) opacity -= 100;
+        
         if(sprite.getGlobalBounds().contains(sf::Vector2f(point.x, point.y))) {
-            color.a = 200;
-            sprite.setColor(color);
+            opacity -= 50;
+            sprite.setColor(sf::Color(255, 255, 255, opacity));
             return true;
         } else {
-            color.a = 255;
-            sprite.setColor(color);
+            sprite.setColor(sf::Color(255, 255, 255, opacity));
             return false;
         }
     }
@@ -33,8 +34,6 @@ public:
     
     void setSelectable(bool selectable) {
         this->selectable = selectable;
-        sprite.setColor((selectable ? sf::Color(255, 255, 255, 255) :
-                                      sf::Color(255, 255, 255, 100)));
     }
     
     bool getSelectable() {
@@ -83,9 +82,9 @@ public:
                 }
             }
             for(Player* player : playingState->players) {
-                if(player != playingState->selectedPlayer) {
+                //if(player != playingState->selectedPlayer) {
                     player->setSelectable(false);
-                }
+                //}
             }
             playingState->hideActionCards();
             playingState->task = Task::FieldCardSelection;
@@ -106,7 +105,6 @@ public:
     }
 };
 
-// Caio
 class PassCard : public ActionCard {
 public:
     PassCard(const sf::Texture& texture, bool selectable = true)
@@ -148,7 +146,6 @@ public:
     }
 };
 
-// Victor
 class KickCard : public ActionCard {
 public:
     KickCard(const sf::Texture& texture, bool selectable = true)
@@ -159,7 +156,6 @@ public:
     }
 };
 
-// Valmir
 class DribbleCard : public ActionCard {
 public:
     DribbleCard(const sf::Texture& texture, bool selectable = true)
@@ -167,10 +163,49 @@ public:
     {}
     
     void action(PlayingState* playingState) override {
+        playingState->selectedAction = playingState->moveCard;
+        
+        if(playingState->task == Task::ActionSelection) {
+            for(FieldCard* card : playingState->fieldCards) {
+                if(//card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1, -1) ||
+                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1,  0) ||
+                   //card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 1,  1) ||
+                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 0, -1) ||
+                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i( 0,  1) ||
+                   //card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1, -1) ||
+                   card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1,  0)
+                   //card->gameCoords == playingState->selectedPlayer->gameCoords + sf::Vector2i(-1,  1)
+                   )
+                {
+                    card->available = true;
+                } else {
+                    card->available = false;
+                }
+            }
+            for(Player* player : playingState->players) {
+                //if(player != playingState->selectedPlayer) {
+                player->setSelectable(false);
+                //}
+            }
+            playingState->hideActionCards();
+            playingState->task = Task::FieldCardSelection;
+        } else if(playingState->task == Task::FieldCardSelection) {
+            playingState->moveSelectedPlayer(playingState->selectedFieldCard->gameCoords);
+            playingState->selectedAction = nullptr;
+            playingState->selectedFieldCard = nullptr;
+            
+            for(Player* player : playingState->players) {
+                if(player->team == playingState->turnTeam) {
+                    player->setSelectable(true);
+                }
+            }
+            
+            playingState->endAction();
+            playingState->task = Task::ActionSelection;
+        }
     }
 };
 
-// Victor
 class DefendCard : public ActionCard {
 public:
     DefendCard(const sf::Texture& texture, bool selectable = true)
@@ -181,7 +216,6 @@ public:
     }
 };
 
-// Valmir
 class StealCard : public ActionCard {
 public:
     StealCard(const sf::Texture& texture, bool selectable = true)
@@ -189,6 +223,9 @@ public:
     {}
     
     void action(PlayingState* playingState) override {
+        playingState->moveBallToPlayer(playingState->selectedPlayer);
+        // Update cards
+        playingState->selectPlayer(playingState->selectedPlayer);
     }
 };
 

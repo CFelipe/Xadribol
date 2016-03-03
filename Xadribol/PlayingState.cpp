@@ -93,12 +93,15 @@ PlayingState::PlayingState(Game* game)
     }
 
     // Playas
-    players.push_back(new Player(game->texmgr.getRef("player_b"),   sf::Vector2i(1, 0), Team::BLUE));
+    players.push_back(new Player(game->texmgr.getRef("player_b"),   sf::Vector2i(1, 0), Team::BLUE, true));
     players.push_back(new Player(game->texmgr.getRef("player_b"),   sf::Vector2i(2, 1), Team::BLUE, false));
-    players.push_back(new Player(game->texmgr.getRef("player_b"),   sf::Vector2i(1, 2), Team::BLUE));
-    players.push_back(new Player(game->texmgr.getRef("player_r"),   sf::Vector2i(3, 0), Team::RED));
+    players.push_back(new Player(game->texmgr.getRef("player_b"),   sf::Vector2i(1, 2), Team::BLUE, true));
+    players.push_back(new Player(game->texmgr.getRef("player_b"),   sf::Vector2i(0, 1), Team::BLUE, false, true));
+    
+    players.push_back(new Player(game->texmgr.getRef("player_r"),   sf::Vector2i(3, 0), Team::RED, true));
     players.push_back(new Player(game->texmgr.getRef("player_r"),   sf::Vector2i(2, 1), Team::RED, false));
-    players.push_back(new Player(game->texmgr.getRef("player_r"),   sf::Vector2i(3, 2), Team::RED));
+    players.push_back(new Player(game->texmgr.getRef("player_r"),   sf::Vector2i(3, 2), Team::RED, true));
+    players.push_back(new Player(game->texmgr.getRef("player_r"),   sf::Vector2i(4, 1), Team::RED, false, true));
 
     playerHalo.setTextureRect(sf::IntRect(0, 0, 40, 40));
     playerHalo.setColor(sf::Color::Transparent);
@@ -289,17 +292,33 @@ void PlayingState::selectPlayer(Player* player) {
                 card->available = dim;
             }
         } else if(task == Task::ActionSelection) {
-            addActionCardToList(*moveCard);
+            if(player->goalie == false) {
+                addActionCardToList(*moveCard);   
+            }
             
-            if(ballPlayer->team == player->team && selectedPlayer == ballPlayer) {
-                // Attack-specific cards
+            if(player->team == ballPlayer->team && player == ballPlayer) {
+                // Player has ball
+                for(Player* player2 : players) {
+                    if(player->gameCoords == player2->gameCoords &&
+                       player->team != player2->team &&
+                       player != player2) {
+                        removeActionCardFromList(*moveCard);
+                        addActionCardToList(*dribbleCard);
+                        break;
+                    }
+                }
+                
                 addActionCardToList(*passCard);
                 addActionCardToList(*kickCard);
-                addActionCardToList(*dribbleCard);
             } else if(ballPlayer->team != player->team){
                 // Defense-specific cards
+                if(player->gameCoords == ballPlayer->gameCoords) {
+                    addActionCardToList(*stealCard);
+                }
+            }
+            
+            if(player->goalie) {
                 addActionCardToList(*defendCard);
-                addActionCardToList(*stealCard);
             }
         }
     } else {
@@ -321,15 +340,36 @@ void PlayingState::updatePlayerPositions(bool animate) {
         unsigned short offsetY = PLAYER_MARGIN_Y;
 
         const char idx = (player->gameCoords.y * 5) + player->gameCoords.x;
-
+        
         if(player->team == Team::BLUE) {
             offsetX = PLAYER_MARGIN_X;
-            offsetY += blueMap[idx] * PLAYER_VSPACE;
-            blueMap[idx]++;
+            
+            if(player->gameCoords == sf::Vector2i(0, 1) && !player->goalie) {
+                offsetX += 40;
+            }
+            
+            if(player->goalie == false) {
+                offsetY += blueMap[idx] * PLAYER_VSPACE;
+                blueMap[idx]++;
+            } else {
+                offsetY = 40;
+            }
         } else {
             offsetX = CARD_W - PLAYER_W - PLAYER_MARGIN_X;
-            offsetY += redMap[idx] * PLAYER_VSPACE;
-            redMap[idx]++;
+            
+            if(player->gameCoords == sf::Vector2i(4, 1) && !player->goalie) {
+                offsetX -= 40;
+            }
+            
+            if(player->goalie == false) {
+                offsetY += redMap[idx] * PLAYER_VSPACE;
+                redMap[idx]++;
+            } else {
+                offsetY = 40;
+            }
+            
+            //offsetY += redMap[idx] * PLAYER_VSPACE;
+            //redMap[idx]++;
         }
 
         sf::Vector2f pos(offsetX + CARDS_ORIGIN_X + (CARD_W + 4) * player->gameCoords.x,
@@ -393,7 +433,7 @@ void PlayingState::moveBallToPlayer(Player* player, bool animate) {
     pos.x += (player->team == Team::BLUE) ? 8 : -2;
 
     if(animate) {
-        animations.push_back(new PosAnimation(ball, pos, 2.0f, Easing::INOUT));
+        animations.push_back(new PosAnimation(ball, pos, 1.0f, Easing::INOUT));
     } else {
         ball.setPosition(pos);
     }
