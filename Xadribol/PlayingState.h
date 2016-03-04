@@ -6,13 +6,17 @@
 #include "Player.h"
 #include "FieldCard.h"
 #include "Animation.h"
+#include "ChanceItem.h"
 
 enum class Task { Placement,
                   PlacementTransition,
                   ActionSelection,
                   ActionSecondary,
                   FieldCardSelection,
-                  PassPlayerSelection };
+                  PassPlayerSelection,
+                  Chance,
+                  ChanceTransition
+                };
 
 class ActionCard;
 
@@ -29,6 +33,7 @@ public:
     std::list<FieldCard*> fieldCards;
     std::list<ActionCard*> currentCards;
     std::list<sf::Drawable*> drawableEntities;
+    std::list<ChanceItem*> chanceItems;
     
     unsigned short turn;
     Team turnTeam;
@@ -52,7 +57,7 @@ public:
     sf::RectangleShape blueBar;
     sf::RectangleShape redBar;
     sf::RectangleShape actionBar;
-    sf::CircleShape apCircle;
+    //sf::CircleShape apCircle;
     TextButton* playButton;
     sf::Sprite roulette;
     sf::Sprite rouletteNeedle;
@@ -82,6 +87,8 @@ public:
     void changeTask(Task& task);
     void hideActionCards();
     void endAction();
+    void addChance(Chance chance, unsigned short weight);
+    void enterChanceMode();
     
 private:
     sf::Vector2f getCardPosition(sf::Vector2i gameCoords);

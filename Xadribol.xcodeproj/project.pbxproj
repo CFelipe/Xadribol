@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		4AEB35711C73F172004F88E0 /* needle.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AEB356F1C73F172004F88E0 /* needle.png */; };
 		4AEB35721C73F172004F88E0 /* roulette.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AEB35701C73F172004F88E0 /* roulette.png */; };
+		557D6D5C1C89913800BEDE68 /* chance_b.png in Resources */ = {isa = PBXBuildFile; fileRef = 557D6D581C89913800BEDE68 /* chance_b.png */; };
+		557D6D5D1C89913800BEDE68 /* chance_fc.png in Resources */ = {isa = PBXBuildFile; fileRef = 557D6D591C89913800BEDE68 /* chance_fc.png */; };
+		557D6D5E1C89913800BEDE68 /* chance_goal.png in Resources */ = {isa = PBXBuildFile; fileRef = 557D6D5A1C89913800BEDE68 /* chance_goal.png */; };
+		557D6D5F1C89913800BEDE68 /* chance_r.png in Resources */ = {isa = PBXBuildFile; fileRef = 557D6D5B1C89913800BEDE68 /* chance_r.png */; };
+		557D6D631C89B28400BEDE68 /* chance_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 557D6D621C89B28400BEDE68 /* chance_arrow.png */; };
 		55CA3A8A1C70E36E00A494F1 /* ResourcePath.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55CA3A891C70E36E00A494F1 /* ResourcePath.mm */; };
 		55CA3A8D1C70E36E00A494F1 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55CA3A8C1C70E36E00A494F1 /* main.cpp */; };
 		55CA3AB61C71196900A494F1 /* ball.png in Resources */ = {isa = PBXBuildFile; fileRef = 55CA3A9C1C71196900A494F1 /* ball.png */; };
@@ -47,6 +52,12 @@
 		4AEB356F1C73F172004F88E0 /* needle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = needle.png; path = resources/needle.png; sourceTree = "<group>"; };
 		4AEB35701C73F172004F88E0 /* roulette.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = roulette.png; path = resources/roulette.png; sourceTree = "<group>"; };
 		4AEB35731C73FC57004F88E0 /* TextButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextButton.h; sourceTree = "<group>"; };
+		557D6D571C898C3600BEDE68 /* ChanceItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChanceItem.h; sourceTree = "<group>"; };
+		557D6D581C89913800BEDE68 /* chance_b.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chance_b.png; path = resources/chance_b.png; sourceTree = "<group>"; };
+		557D6D591C89913800BEDE68 /* chance_fc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chance_fc.png; path = resources/chance_fc.png; sourceTree = "<group>"; };
+		557D6D5A1C89913800BEDE68 /* chance_goal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chance_goal.png; path = resources/chance_goal.png; sourceTree = "<group>"; };
+		557D6D5B1C89913800BEDE68 /* chance_r.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chance_r.png; path = resources/chance_r.png; sourceTree = "<group>"; };
+		557D6D621C89B28400BEDE68 /* chance_arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chance_arrow.png; path = resources/chance_arrow.png; sourceTree = "<group>"; };
 		55CA3A841C70E36E00A494F1 /* Xadribol.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xadribol.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55CA3A881C70E36E00A494F1 /* Xadribol-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Xadribol-Info.plist"; sourceTree = "<group>"; };
 		55CA3A891C70E36E00A494F1 /* ResourcePath.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
@@ -137,6 +148,7 @@
 				55CA3ADE1C714D9300A494F1 /* FieldCard.h */,
 				55CA3ADF1C714DA600A494F1 /* ActionCard.h */,
 				4AEB35731C73FC57004F88E0 /* TextButton.h */,
+				557D6D571C898C3600BEDE68 /* ChanceItem.h */,
 				55CA3A8E1C70E36E00A494F1 /* Resources */,
 				55CA3A871C70E36E00A494F1 /* Supporting Files */,
 			);
@@ -154,6 +166,11 @@
 		55CA3A8E1C70E36E00A494F1 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				557D6D621C89B28400BEDE68 /* chance_arrow.png */,
+				557D6D581C89913800BEDE68 /* chance_b.png */,
+				557D6D591C89913800BEDE68 /* chance_fc.png */,
+				557D6D5A1C89913800BEDE68 /* chance_goal.png */,
+				557D6D5B1C89913800BEDE68 /* chance_r.png */,
 				4AEB356F1C73F172004F88E0 /* needle.png */,
 				4AEB35701C73F172004F88E0 /* roulette.png */,
 				55CA3ADB1C714B1500A494F1 /* inconsolata.otf */,
@@ -246,14 +263,18 @@
 			files = (
 				55CA3AC81C71196900A494F1 /* fieldcard_rc.png in Resources */,
 				55CA3AC31C71196900A494F1 /* fieldcard_cu.png in Resources */,
+				557D6D5D1C89913800BEDE68 /* chance_fc.png in Resources */,
+				557D6D5C1C89913800BEDE68 /* chance_b.png in Resources */,
 				55CA3AC71C71196900A494F1 /* fieldcard_lu.png in Resources */,
 				55CA3ABC1C71196900A494F1 /* card_passar_r.png in Resources */,
+				557D6D5E1C89913800BEDE68 /* chance_goal.png in Resources */,
 				55CA3ABE1C71196900A494F1 /* card_tocar_b.png in Resources */,
 				55CA3ACD1C71196900A494F1 /* player_r.png in Resources */,
 				55CA3ABD1C71196900A494F1 /* card_roubar_r.png in Resources */,
 				55CA3AB81C71196900A494F1 /* card_defender_r.png in Resources */,
 				55CA3ACC1C71196900A494F1 /* player_b.png in Resources */,
 				55CA3ACE1C71196900A494F1 /* playerhalo_b.png in Resources */,
+				557D6D631C89B28400BEDE68 /* chance_arrow.png in Resources */,
 				55CA3AB61C71196900A494F1 /* ball.png in Resources */,
 				4AEB35721C73F172004F88E0 /* roulette.png in Resources */,
 				55CA3AC61C71196900A494F1 /* fieldcard_ld.png in Resources */,
@@ -273,6 +294,7 @@
 				55CA3AC41C71196900A494F1 /* fieldcard_d.png in Resources */,
 				55CA3ACA1C71196900A494F1 /* fieldcard_ru.png in Resources */,
 				55CA3AC51C71196900A494F1 /* fieldcard_lc.png in Resources */,
+				557D6D5F1C89913800BEDE68 /* chance_r.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

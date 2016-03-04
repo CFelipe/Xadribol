@@ -235,9 +235,16 @@ public:
     }
     
     void action(PlayingState* playingState) override {
-        playingState->moveBallToPlayer(playingState->selectedPlayer);
-        // Update cards
-        playingState->selectPlayer(playingState->selectedPlayer);
+        if(playingState->task == Task::ActionSelection) {
+            playingState->addChance(Chance::R, 1);
+            playingState->addChance(Chance::B, 1);
+            playingState->addChance(Chance::R, 1);
+            playingState->enterChanceMode();
+        } else {
+            playingState->moveBallToPlayer(playingState->selectedPlayer);
+            // Update cards
+            playingState->selectPlayer(playingState->selectedPlayer);
+        }
     }
 };
 

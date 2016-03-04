@@ -193,6 +193,9 @@ void PlayingState::handleInput() {
                                 actionPoints -= card->costAP;
                                 updateTextAP();
                                 card->action(this);
+                                
+                                //if(actionPoints == 0) changeTurn();
+                                
                                 return;
                             }
                         }
@@ -542,4 +545,30 @@ void PlayingState::hideActionCards() {
 
 void PlayingState::endAction() {
     drawableEntities.push_back(&endTurnCard->sprite);
+}
+
+void PlayingState::addChance(Chance chance, unsigned short weight) {
+    std::string texture;
+    
+    if(chance == Chance::B) {
+        texture = "chance_b";
+    } else if(chance == Chance::R) {
+        texture = "chance_r";
+    } else if(chance == Chance::FieldCard) {
+        texture = "chance_fc";
+    } else if(chance == Chance::Goal) {
+        texture = "chance_goal";
+    }
+    
+    ChanceItem* chanceItem = new ChanceItem(chance, weight, game->texmgr.getRef(texture));
+    chanceItem->setPosition(sf::Vector2f(43 + (50 * chanceItems.size()), 120));
+    
+    chanceItems.push_back(chanceItem);
+    drawableEntities.push_back(chanceItem);
+}
+
+void PlayingState::enterChanceMode() {
+    task = Task::Chance;
+    selectPlayer(nullptr);
+    removeActionCardFromList(*endTurnCard);
 }
