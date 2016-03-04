@@ -40,15 +40,26 @@ public:
         return selectable;
     }
     
+    void setCostAP(int cost) {
+        costAP = cost;
+    }
+
+    int getCostAP() {
+        return costAP;
+    }
+    
 private:
     bool selectable;
+    int costAP;
 };
 
 class EndTurnCard : public ActionCard {
 public:
     EndTurnCard(const sf::Texture& texture, bool selectable = true)
     : ActionCard(texture, selectable)
-    {}
+    {
+        costAP = 0;
+    }
     
     void action(PlayingState* playingState) {
         playingState->changeTurn();
@@ -59,7 +70,9 @@ class MoveCard : public ActionCard {
 public:
     MoveCard(const sf::Texture& texture, bool selectable = true)
     : ActionCard(texture, selectable)
-    {}
+    {
+        costAP = 1;
+    }
     
     void action(PlayingState* playingState) override {
         playingState->selectedAction = playingState->moveCard;
@@ -109,7 +122,9 @@ class PassCard : public ActionCard {
 public:
     PassCard(const sf::Texture& texture, bool selectable = true)
     : ActionCard(texture, selectable)
-    {}
+    {
+        costAP = 1;
+    }
     
     void action(PlayingState* playingState) override {
         playingState->selectedAction = playingState->passCard;
@@ -160,7 +175,9 @@ class DribbleCard : public ActionCard {
 public:
     DribbleCard(const sf::Texture& texture, bool selectable = true)
     : ActionCard(texture, selectable)
-    {}
+    {
+        costAP = 2;
+    }
     
     void action(PlayingState* playingState) override {
         playingState->selectedAction = playingState->moveCard;
@@ -220,7 +237,9 @@ class StealCard : public ActionCard {
 public:
     StealCard(const sf::Texture& texture, bool selectable = true)
     : ActionCard(texture, selectable)
-    {}
+    {
+        costAP = 2;
+    }
     
     void action(PlayingState* playingState) override {
         playingState->moveBallToPlayer(playingState->selectedPlayer);

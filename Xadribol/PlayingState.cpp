@@ -49,9 +49,14 @@ PlayingState::PlayingState(Game* game)
     rouletteNeedle.setRotation(0);
 
     // Use sf::String(L"String"); for accents etc
-    playButton = new TextButton(sf::String(L"Começar"), 32, game->gameFont,
-                                light, dark);
+    playButton = new TextButton(sf::String(L"Começar"), 32, game->gameFont, light, dark);
     playButton->setPosition(sf::Vector2f(400, 100));
+
+    textScore = new Text(sf::String(scoreBlue + " X " + scoreRed), 32, game->gameFont, light, dark);
+    textScore->setPosition(sf::Vector2f(400, 10));
+
+    textAP = new Text(sf::String(actionPoints), 32, game->gameFont, light, dark);
+    textAP->setPosition(sf::Vector2f(700, 90));
 
     drawableEntities.push_back(&redBar);
     drawableEntities.push_back(&blueBar);
@@ -59,6 +64,8 @@ PlayingState::PlayingState(Game* game)
     drawableEntities.push_back(&roulette);
     drawableEntities.push_back(&rouletteNeedle);
     drawableEntities.push_back(playButton);
+    drawableEntities.push_back(textScore);
+    drawableEntities.push_back(textAP);
 
     selectedAction = nullptr;
     selectedFieldCard = nullptr;
@@ -180,8 +187,12 @@ void PlayingState::handleInput() {
 
                     for(ActionCard* card : currentCards) {
                         if(card->contains(mousePos) && task == Task::ActionSelection) {
-                            card->action(this);
-                            return;
+                            if(card->getCostAP() < actionPoints) {
+                                actionPoints -= card->getCostAP();
+                                updateTextAP();
+                                card->action(this);
+                                return;
+                            }
                         }
                     }
                 }
@@ -470,6 +481,16 @@ void PlayingState::changeTurn(Team team) {
     for(Player* player : players) {
         player->setSelectable(player->team == turnTeam);
     }
+
+    actionPoints = 5;
+}
+
+void PlayingState::updateTextScore() {
+    textScore->setString(sf::String(scoreBlue + " X " + scoreRed))
+}
+
+void PlayingState::updateTextAP() {
+    textAP->setString(sf::String(actionPoints));
 }
 
 void PlayingState::addActionCardToList(ActionCard& card) {

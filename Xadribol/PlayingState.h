@@ -34,6 +34,9 @@ public:
     Team turnTeam;
     unsigned short scoreRed;
     unsigned short scoreBlue;
+    Text* textScore;
+    int actionPoints;
+    Text* textAP;
     
     Task task;
     
@@ -87,6 +90,8 @@ private:
     void removeActionCardFromList(ActionCard& card);
     void getBallPosition(Player* player);
     void changeTurn(Team team);
+    void updateTextScore();
+    void updateTextAP();
 };
 
 #endif /* defined(__Xadribol__PlayingState__) */
