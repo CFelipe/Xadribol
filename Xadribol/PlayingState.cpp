@@ -8,6 +8,7 @@ PlayingState::PlayingState(Game* game)
     turn(0),
     scoreRed(0),
     scoreBlue(0),
+    actionPoints(0),
     selectedPlayer(nullptr),
     ballPlayer(nullptr)
 {
@@ -52,20 +53,21 @@ PlayingState::PlayingState(Game* game)
     playButton = new TextButton(sf::String(L"Começar"), 32, game->gameFont, light, dark);
     playButton->setPosition(sf::Vector2f(400, 100));
 
-    textScore = new Text(sf::String(scoreBlue + " X " + scoreRed), 32, game->gameFont, light, dark);
-    textScore->setPosition(sf::Vector2f(400, 10));
+    textScore = sf::Text("", game->gameFont, 32);
+    textScore.setColor(dark);
 
-    textAP = new Text(sf::String(actionPoints), 32, game->gameFont, light, dark);
-    textAP->setPosition(sf::Vector2f(700, 90));
-
+    textAP = sf::Text("", game->gameFont, 32);
+    textAP.setColor(light);
+    updateTextScore();
+    updateTextAP();
+    
     drawableEntities.push_back(&redBar);
     drawableEntities.push_back(&blueBar);
     drawableEntities.push_back(&actionBar);
     drawableEntities.push_back(&roulette);
     drawableEntities.push_back(&rouletteNeedle);
     drawableEntities.push_back(playButton);
-    drawableEntities.push_back(textScore);
-    drawableEntities.push_back(textAP);
+    drawableEntities.push_back(&textScore);
 
     selectedAction = nullptr;
     selectedFieldCard = nullptr;
@@ -187,8 +189,8 @@ void PlayingState::handleInput() {
 
                     for(ActionCard* card : currentCards) {
                         if(card->contains(mousePos) && task == Task::ActionSelection) {
-                            if(card->getCostAP() < actionPoints) {
-                                actionPoints -= card->getCostAP();
+                            if(card->costAP <= actionPoints) {
+                                actionPoints -= card->costAP;
                                 updateTextAP();
                                 card->action(this);
                                 return;
@@ -243,7 +245,7 @@ void PlayingState::update(const float dt) {
         } else {
             needleVel = 0;
             Team selectedTeam = (needleRotation >= 180.0f) ? Team::BLUE : Team::RED;
-
+            
             animations.push_back(new PosAnimation(*playButton,
                                                   playButton->getPosition() + sf::Vector2f(600.0f, 0.0f),
                                                   2.0f, Easing::INOUT));
@@ -259,6 +261,8 @@ void PlayingState::update(const float dt) {
                     moveBallToPlayer(player);
                     task = Task::ActionSelection;
                     changeTurn(selectedTeam);
+                    updateTextScore();
+                    drawableEntities.push_back(&textAP);
                     return;
                 }
             }
@@ -483,14 +487,31 @@ void PlayingState::changeTurn(Team team) {
     }
 
     actionPoints = 5;
+    updateTextAP();
 }
 
 void PlayingState::updateTextScore() {
-    textScore->setString(sf::String(scoreBlue + " X " + scoreRed))
+    sf::String str;
+    
+    if(task == Task::Placement) {
+        str = sf::String(L"Posicione os jogadores");
+    } else {
+        str = sf::String(std::to_string(scoreBlue) + " X " + std::to_string(scoreRed));
+    }
+    
+    textScore.setString(str);
+    
+    sf::FloatRect textRect = textScore.getLocalBounds();
+    textScore.setOrigin((int) (textRect.left + textRect.width / 2.0f), 0);
+    textScore.setPosition(400, 5);
 }
 
 void PlayingState::updateTextAP() {
-    textAP->setString(sf::String(actionPoints));
+    textAP.setString(sf::String(std::to_string(actionPoints)));;
+    
+    sf::FloatRect textRect = textAP.getLocalBounds();
+    textAP.setOrigin((int) (textRect.left + textRect.width / 2.0f), 0);
+    textAP.setPosition(740, 80);
 }
 
 void PlayingState::addActionCardToList(ActionCard& card) {

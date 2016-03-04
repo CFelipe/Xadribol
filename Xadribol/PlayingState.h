@@ -34,9 +34,9 @@ public:
     Team turnTeam;
     unsigned short scoreRed;
     unsigned short scoreBlue;
-    Text* textScore;
-    int actionPoints;
-    Text* textAP;
+    unsigned short actionPoints;
+    sf::Text textScore;
+    sf::Text textAP;
     
     Task task;
     
@@ -52,6 +52,7 @@ public:
     sf::RectangleShape blueBar;
     sf::RectangleShape redBar;
     sf::RectangleShape actionBar;
+    sf::CircleShape apCircle;
     TextButton* playButton;
     sf::Sprite roulette;
     sf::Sprite rouletteNeedle;

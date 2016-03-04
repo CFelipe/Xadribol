@@ -40,17 +40,10 @@ public:
         return selectable;
     }
     
-    void setCostAP(int cost) {
-        costAP = cost;
-    }
-
-    int getCostAP() {
-        return costAP;
-    }
+    unsigned short costAP;
     
 private:
     bool selectable;
-    int costAP;
 };
 
 class EndTurnCard : public ActionCard {
